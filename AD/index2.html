@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KIIT Bus Tracking</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style2.css">
+</head>
+
+<body>
+
+    <!-- Main Layout -->
+    <div class="main-container">
+
+        <!-- LEFT SIDE : MAP -->
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+
+        <!-- RIGHT SIDE : BUS INFO -->
+        <div class="info-container">
+
+            <div class="dashboard-card">
+                <h2>Bus Live Information</h2>
+
+                <div class="info-row">
+                    <label>Bus Number</label>
+                    <span id="bus-number">KIIT-07</span>
+                </div>
+
+                <div class="info-row">
+                    <label>Departure Time</label>
+                    <span id="departure-time">08:15 AM</span>
+                </div>
+
+                <div class="info-row">
+                    <label>Last Stop Departed</label>
+                    <span id="last-stop">Campus 12</span>
+                </div>
+
+                <div class="info-row">
+                    <label>Next Stop</label>
+                    <span id="next-stop">Campus 25</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Your Bus Tracking Script -->
+    <script src="script.js"></script>
+
+</body>
+</html>

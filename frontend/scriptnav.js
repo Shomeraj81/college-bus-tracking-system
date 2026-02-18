@@ -1,25 +1,29 @@
-// Login logic will be added later
-console.log("Login page loaded");
-
-/*navigation component*/
-
-// Step 1: Create Map
+// ======================================
+// 1️⃣ MAP INITIALIZATION
+// ======================================
 var map = L.map('map').setView([20.3530, 85.8190], 15);
 
-// Step 2: Add Tile Layer (Map Design)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// Custom Bus Icon
-var busIcon = L.icon({
-    iconUrl: 'https://toppng.com/uploads/preview/bus-top-view-clip-art-bus-icon-top-view-11562896756ifkgek2ydy.png',
-    iconSize: [40, 40]
-});
 
-// Add Marker
-var busMarker = L.marker([20.3530, 85.8190], { icon: busIcon }).addTo(map);
+// ======================================
+// 2️⃣ BUS STATE OBJECT
+// ======================================
+let bus = {
+    id: "KIIT-07",
+    speed: 70, // km/h
+    currentIndex: 0,
+    isRunning: false,
+    remainingDistance: 0,
+    eta: 0
+};
 
+
+// ======================================
+// 3️⃣ ROUTE DATA
+// ======================================
 var route = [
     [20.356628,85.820006],
     [20.356645,85.819330],
@@ -28,90 +32,120 @@ var route = [
     [20.363803,85.816287]
 ];
 
-var polyline = L.polyline(route, { color: 'blue' }).addTo(map);
+L.polyline(route, { color: 'blue' }).addTo(map);
 
-var i = 0;
+
+// ======================================
+// 4️⃣ BUS ICON & MARKER
+// ======================================
+var busIcon = L.icon({
+    iconUrl: 'https://toppng.com/uploads/preview/bus-top-view-clip-art-bus-icon-top-view-11562896756ifkgek2ydy.png',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20]
+});
+
+var busMarker = L.marker(route[0], { icon: busIcon }).addTo(map);
+
+
+// ======================================
+// 5️⃣ DISTANCE FUNCTION (HAVERSINE)
+// ======================================
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+
+// ======================================
+// 6️⃣ MOVEMENT ENGINE
+// ======================================
+let animationRef;
 
 function moveBus() {
-    if (i < route.length) {
-        busMarker.setLatLng(route[i]);
-        i++;
-    } else {
-        i = 0; // restart route
+
+    if (!bus.isRunning) return;
+
+    if (bus.currentIndex >= route.length - 1) {
+        bus.currentIndex = 0; // Restart
     }
-}
 
-setInterval(moveBus, 1000);
+    var start = route[bus.currentIndex];
+    var end = route[bus.currentIndex + 1];
 
-/*let map;
-let busMarker;
-let routePath;
-let i = 0;
+    var steps = 100;
+    var step = 0;
 
-// Predefined Route Coordinates (Simulated GPS Path)
-const route = [
-  { lat: 20.3530, lng: 85.8190 },
-  { lat: 20.3540, lng: 85.8200 },
-  { lat: 20.3550, lng: 85.8210 },
-  { lat: 20.3560, lng: 85.8220 },
-  { lat: 20.3570, lng: 85.8230 }
-];
+    var latStep = (end[0] - start[0]) / steps;
+    var lngStep = (end[1] - start[1]) / steps;
 
-// This function is automatically called by Google Maps API
-function initMap() {
+    var lat = start[0];
+    var lng = start[1];
 
-  // Center Map at KIIT
-  const kiitLocation = { lat: 20.3530, lng: 85.8190 };
+    animationRef = setInterval(function () {
 
-  // Create Map
-  map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 15,
-    center: kiitLocation,
-  });
+        lat += latStep;
+        lng += lngStep;
 
-  // Create Bus Marker
-  busMarker = new google.maps.Marker({
-    position: kiitLocation,
-    map: map,
-    title: "KIIT Bus - Route 1",
-    icon: {
-      url: "https://maps.google.com/mapfiles/kml/shapes/bus.png",
-      scaledSize: new google.maps.Size(40, 40)
-    }
-  });
+        busMarker.setLatLng([lat, lng]);
 
-  // Draw Route Line
-  routePath = new google.maps.Polyline({
-    path: route,
-    geodesic: true,
-    strokeColor: "#0000FF",
-    strokeOpacity: 1.0,
-    strokeWeight: 4,
-  });
+        // Auto follow camera
+        map.panTo([lat, lng]);
 
-  routePath.setMap(map);
+        // 🔥 Calculate distance from CURRENT position to FINAL destination
+        var finalPoint = route[route.length - 1];
 
-  // Auto fit map to route
-  const bounds = new google.maps.LatLngBounds();
-  route.forEach(coord => bounds.extend(coord));
-  map.fitBounds(bounds);
+        bus.remainingDistance = calculateDistance(
+            lat, lng,
+            finalPoint[0], finalPoint[1]
+        );
 
-  // Start Bus Movement
-  startBusMovement();
+        // Prevent negative value
+        if (bus.remainingDistance < 0) {
+            bus.remainingDistance = 0;
+        }
+
+        // ETA calculation
+        bus.eta = (bus.remainingDistance / bus.speed) * 60;
+
+        // Update UI
+        document.getElementById("speed-display").innerText = bus.speed;
+        document.getElementById("distance-display").innerText =
+            bus.remainingDistance.toFixed(2);
+        document.getElementById("eta-display").innerText =
+            bus.eta.toFixed(1);
+
+        step++;
+
+        if (step >= steps) {
+            clearInterval(animationRef);
+            bus.currentIndex++;
+            moveBus();
+        }
+
+    }, 20);
 }
 
 
-// Function to Move Bus
-function startBusMovement() {
-  setInterval(() => {
-
-    if (i < route.length) {
-      busMarker.setPosition(route[i]);
-      i++;
+// ======================================
+// 7️⃣ START / PAUSE CONTROL
+// ======================================
+function toggleBus() {
+    if (!bus.isRunning) {
+        bus.isRunning = true;
+        moveBus();
     } else {
-      i = 0; // Restart route
+        bus.isRunning = false;
+        clearInterval(animationRef);
     }
-
-  }, 3000); // Move every 3 seconds
-}*/
-
+}

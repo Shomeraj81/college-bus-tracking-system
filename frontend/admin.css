@@ -1,16 +1,22 @@
 /* ================================================
    ADMIN DASHBOARD - ENHANCED STYLES
-   Link this AFTER style.css in admin.html only:
-   <link rel="stylesheet" href="style.css">
-   <link rel="stylesheet" href="admin-style.css">
    ================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-/* ===== ADMIN BODY OVERRIDE ===== */
+/* ===== RESET & BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===== ADMIN BODY ===== */
 .dashboard-body {
     font-family: 'Plus Jakarta Sans', Arial, sans-serif;
     background: #eef2f7;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* ===== HEADER - ENHANCED ===== */
@@ -19,16 +25,27 @@
     padding: 0 30px;
     height: 65px;
     box-shadow: 0 3px 15px rgba(27, 143, 58, 0.35);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .dashboard-header h1 {
+    flex-grow: 1;
+    text-align: center;
     font-size: 22px;
     font-weight: 700;
     letter-spacing: 0.5px;
+    color: white;
+    margin: 0;
 }
 
 .header-logo {
     width: 44px;
+    height: auto;
     border-radius: 8px;
     background: rgba(255,255,255,0.15);
     padding: 4px;
@@ -44,7 +61,9 @@
     font-weight: 600;
     letter-spacing: 0.3px;
     transition: all 0.25s ease;
-    margin-top: 0 !important;
+    cursor: pointer;
+    width: auto;
+    margin: 0;
 }
 
 .logout-btn:hover {
@@ -56,6 +75,7 @@
 
 /* ===== DASHBOARD CONTAINER ===== */
 .dashboard-container {
+    display: flex;
     height: calc(100vh - 65px);
     background: #eef2f7;
 }
@@ -67,6 +87,7 @@
     border-right: 1px solid #e5eaf0;
     box-shadow: none;
     padding-top: 10px;
+    overflow-y: auto;
 }
 
 /* Sidebar top label */
@@ -94,14 +115,12 @@
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
-    border-left: none;
     transition: all 0.2s ease;
     gap: 12px;
 }
 
 .nav-item span {
     font-size: 18px;
-    margin-right: 0;
     width: 28px;
     height: 28px;
     display: flex;
@@ -116,7 +135,6 @@
 .nav-item:hover {
     background: #f0faf3;
     color: #1b8f3a;
-    border-left: none;
     transform: translateX(3px);
 }
 
@@ -128,7 +146,6 @@
     background: linear-gradient(135deg, #e8f5e9, #d4edda);
     color: #1b8f3a;
     font-weight: 700;
-    border-left: none;
     box-shadow: 0 2px 8px rgba(27, 143, 58, 0.12);
 }
 
@@ -139,8 +156,18 @@
 
 /* ===== MAIN CONTENT ===== */
 .dashboard-main {
+    flex: 1;
     padding: 28px 32px;
     background: #eef2f7;
+    overflow-y: auto;
+}
+
+.dashboard-section {
+    display: none;
+}
+
+.dashboard-section.active {
+    display: block;
 }
 
 /* ===== SECTION HEADINGS ===== */
@@ -175,6 +202,12 @@
     border-bottom: 1px dashed #e0e8ec;
 }
 
+/* Form group */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
 /* Form group labels */
 .form-group label,
 .add-form label {
@@ -197,6 +230,7 @@
     color: #2d3748;
     transition: all 0.2s ease;
     margin-top: 0;
+    width: 100%;
 }
 
 .add-form input::placeholder {
@@ -293,6 +327,7 @@ th {
     background: #f4f7fa;
     border-bottom: 2px solid #e2e8f0;
     white-space: nowrap;
+    text-align: left;
 }
 
 th:first-child {
@@ -354,6 +389,15 @@ tbody tr:hover td {
     animation: pulse 2s infinite;
 }
 
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
 .status.inactive {
     background: #fde8e8;
     color: #c53030;
@@ -407,66 +451,15 @@ tbody tr:hover td {
     box-shadow: 0 3px 8px rgba(244, 67, 54, 0.35);
 }
 
-/* ===== STAT CARDS (top of dashboard) ===== */
-.stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 18px;
-    margin-bottom: 26px;
-}
-
-.stat-card {
-    background: white;
-    border-radius: 14px;
-    padding: 20px 22px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-    border: 1px solid #e8edf2;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-}
-
-.stat-icon {
-    font-size: 30px;
-    width: 52px;
-    height: 52px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    background: #e8f5e9;
-    flex-shrink: 0;
-}
-
-.stat-icon.yellow { background: #fff8e1; }
-.stat-icon.blue   { background: #e3f2fd; }
-.stat-icon.red    { background: #fce4ec; }
-
-.stat-info h4 {
-    font-size: 26px;
-    font-weight: 800;
-    color: #1a2e1f;
-    line-height: 1;
-    margin-bottom: 4px;
-}
-
-.stat-info p {
-    font-size: 12px;
-    color: #7a8a99;
-    font-weight: 500;
-}
-
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .dashboard-header {
         padding: 0 15px;
         height: 60px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 20px;
     }
 
     .sidebar {
@@ -493,8 +486,8 @@ tbody tr:hover td {
         border-radius: 10px;
     }
 
-    .stats-row {
-        grid-template-columns: repeat(2, 1fr);
+    .form-grid {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -557,24 +550,21 @@ tbody tr:hover td {
         font-size: 20px;
     }
 
-    .stats-row {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+    .dashboard-header {
+        padding: 10px 15px;
     }
 
-    .stat-card {
-        padding: 14px;
-        gap: 10px;
+    .dashboard-header h1 {
+        font-size: 16px;
     }
 
-    .stat-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 22px;
+    .logout-btn {
+        padding: 6px 12px;
+        font-size: 14px;
     }
 
-    .stat-info h4 {
-        font-size: 22px;
+    .add-form, .data-table {
+        padding: 15px;
     }
 
     .add-btn {
@@ -587,20 +577,16 @@ tbody tr:hover td {
     }
 
     th, td {
-        padding: 10px 10px;
+        padding: 10px;
         font-size: 12px;
     }
 
-    .dashboard-header h1 {
-        font-size: 15px;
+    table {
+        font-size: 12px;
     }
 }
 
 @media (max-width: 360px) {
-    .stats-row {
-        grid-template-columns: 1fr 1fr;
-    }
-
     .dashboard-header h1 {
         font-size: 13px;
     }
@@ -608,5 +594,9 @@ tbody tr:hover td {
     .logout-btn {
         padding: 6px 10px;
         font-size: 12px;
+    }
+
+    .header-logo {
+        width: 35px;
     }
 }

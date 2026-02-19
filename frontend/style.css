@@ -1,101 +1,164 @@
+/* ===== GLOBAL PAGE ===== */
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(120deg, #1b8f3a, #ffffff);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #0d6b2a, #1b8f3a, #ffffff);
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
+/* Soft animated background glow */
+body::before {
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    top: -150px;
+    left: -150px;
+    filter: blur(80px);
+}
+
+/* ===== LOGIN CONTAINER ===== */
 .login-container {
     text-align: center;
+    z-index: 2;
 }
 
+/* ===== TITLE ===== */
 .title {
-    color: #1b8f3a;
-    font-size: 32px;
-    margin-bottom: 5px;
+    color: #0d6b2a;
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
 }
 
 .subtitle {
-    color: #555;
-    margin-bottom: 25px;
+    color: #444;
+    margin-bottom: 28px;
+    font-size: 14px;
 }
 
+/* ===== LOGIN BOX (GLASS EFFECT) ===== */
 .login-box {
-    background: white;
-    padding: 25px;
-    width: 320px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 28px;
+    width: 340px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
     text-align: left;
+    transition: transform 0.3s ease;
 }
 
+.login-box:hover {
+    transform: translateY(-3px);
+}
+
+/* ===== LOGIN HEADER ===== */
 .login-box h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     color: #1b8f3a;
+    font-size: 22px;
 }
 
+/* ===== LABELS ===== */
 label {
     display: block;
-    margin-top: 10px;
-    font-weight: bold;
-    color: #333;
+    margin-top: 12px;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 13px;
 }
 
+/* ===== INPUTS ===== */
 input, select {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 8px;
+    border: 1.5px solid #d1d9e6;
+    background: #f8fafc;
+    font-size: 14px;
+    transition: all 0.2s ease;
 }
 
+/* Input focus glow */
+input:focus, select:focus {
+    border-color: #1b8f3a;
+    background: white;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(27, 143, 58, 0.15);
+}
+
+/* ===== BUTTON ===== */
 button {
     width: 100%;
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #f2c94c; /* yellow */
+    margin-top: 22px;
+    padding: 12px;
+    background: linear-gradient(135deg, #f2c94c, #e0b93c);
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 10px;
+    font-size: 15px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 10px rgba(242, 201, 76, 0.45);
 }
 
+/* Button hover animation */
 button:hover {
-    background-color: #e0b93c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(242, 201, 76, 0.65);
 }
 
-/* KIIT Logo */
+button:active {
+    transform: translateY(0);
+}
+
+/* ===== KIIT LOGO ===== */
 .kiit-logo {
     position: absolute;
-    top: 15px;
-    right: 20px;
-    width: 80px;
+    top: 18px;
+    right: 25px;
+    width: 85px;
+    z-index: 3;
 }
 
-/* Bus Animation */
+/* ===== BUS ANIMATION ===== */
 .bus-animation {
     position: absolute;
-    top: 20px;
-    right: -150px;
-    width: 120px;
-    animation: moveBus 10s linear infinite;
+    top: 25px;
+    right: -160px;
+    width: 130px;
+    animation: moveBus 12s linear infinite;
 }
 
-/* Bus moving from right to left */
+/* Smooth bus movement */
 @keyframes moveBus {
     0% {
-        right: -150px;
+        right: -160px;
     }
     100% {
         right: 110%;
     }
 }
 
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+    .login-box {
+        width: 90%;
+    }
 
-
+    .title {
+        font-size: 24px;
+    }
+}

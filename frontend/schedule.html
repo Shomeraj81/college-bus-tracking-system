@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Schedule</title>
+    <link rel="stylesheet" href="schedule.css">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <img src="KIIT_logo.png" class="logo">
+        <h2>Bus Schedule</h2>
+    </div>
+    <button onclick="goBack()">Back</button>
+</div>
+
+<div class="container">
+
+    <!-- FILTER SECTION -->
+    <div class="filter-section">
+
+        <input type="text" id="fromLocation" placeholder="From Location">
+
+        <input type="text" id="toLocation" placeholder="To Destination">
+
+        <select id="timeFilter">
+            <option value="all">All Time</option>
+            <option value="morning">Morning (6AM - 12PM)</option>
+            <option value="afternoon">Afternoon (12PM - 6PM)</option>
+        </select>
+
+        <button onclick="findBus()">Find Bus</button>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-container">
+        <table id="scheduleTable">
+            <thead>
+                <tr>
+                    <th>Bus No</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Departure</th>
+                    <th>Arrival</th>
+                    <th>Driver</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>KIIT-01</td>
+                    <td>Patia</td>
+                    <td>KIIT Campus</td>
+                    <td>8:00</td>
+                    <td>8:30</td>
+                    <td>Mr. Das</td>
+                </tr>
+                <tr>
+                    <td>KIIT-07</td>
+                    <td>KIIT Square</td>
+                    <td>KIIT Campus</td>
+                    <td>13:30</td>
+                    <td>14:00</td>
+                    <td>Mr. Mohanty</td>
+                </tr>
+                <tr>
+                    <td>KIIT-12</td>
+                    <td>Bhubaneswar</td>
+                    <td>KIIT Campus</td>
+                    <td>7:45</td>
+                    <td>8:20</td>
+                    <td>Mr. Sahoo</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="schedule.js"></script>
+</body>
+</html>

@@ -6,7 +6,7 @@ body {
     
     background: 
         linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)),
-        url("bg.jpeg");
+        url("bus-background.jpg");
 
     background-size: cover;
     background-position: center;

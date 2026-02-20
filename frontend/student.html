@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="stylestud.css" />
+  </head>
+
+  <body>
+    <!-- ===== TOP BAR ===== -->
+    <header class="top-bar">
+      <h2>Student Dashboard</h2>
+      <button class="logout-btn">Logout</button>
+    </header>
+
+    <div class="dashboard-container">
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="sidebar">
+        <h4 class="nav-title">NAVIGATION</h4>
+
+        <ul class="nav-links">
+          <li class="active">🚌 Live Bus Tracking</li>
+
+          <!-- TEMPLATE SPACE -->
+          <li>📅 Bus Schedule</li>
+          <li>🔔 Notifications</li>
+          <li>👤 Profile</li>
+          <li>⚙️ Settings</li>
+        </ul>
+      </aside>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <main class="main-content">
+        <div class="tracking-layout">
+          <!-- LEFT MAP -->
+          <div class="map-container">
+            <div id="map"></div>
+          </div>
+
+          <!-- RIGHT INFO PANEL -->
+          <div class="info-container">
+            <div class="dashboard-card">
+              <h2>Bus Live Information</h2>
+
+              <div class="info-row">
+                <label>Bus Number</label>
+                <span id="bus-number">KIIT-07</span>
+              </div>
+
+              <div class="info-row">
+                <label>Speed (km/h)</label>
+                <span id="speed-display">70</span>
+              </div>
+
+              <div class="info-row">
+                <label>Remaining Distance (km)</label>
+                <span id="distance-display">0</span>
+              </div>
+
+              <div class="info-row">
+                <label>ETA (minutes)</label>
+                <span id="eta-display">0</span>
+              </div>
+
+              <button onclick="toggleBus()" class="control-btn">
+                Start / Pause Bus
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="scriptstudent.js"></script>
+  </body>
+</html>

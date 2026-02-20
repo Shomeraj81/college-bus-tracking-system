@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - KIIT Bus Facility</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- Header -->
+    <header class="dashboard-header">
+        <img src="KIIT_logo.png" alt="KIIT Logo" class="header-logo">
+        <h1>Admin Dashboard</h1>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+    </header>
+
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav>
+                <a href="#buses" class="nav-item active" onclick="showSection('buses')">
+                    <span>🚌</span> Manage Buses
+                </a>
+                <a href="#routes" class="nav-item" onclick="showSection('routes')">
+                    <span>🗺️</span> Manage Routes
+                </a>
+                <a href="#drivers" class="nav-item" onclick="showSection('drivers')">
+                    <span>🧑‍✈️</span> Manage Drivers
+                </a>
+                <a href="#students" class="nav-item" onclick="showSection('students')">
+                    <span>👥</span> Students
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+
+            <!-- ===== MANAGE BUSES SECTION ===== -->
+            <section id="buses" class="dashboard-section active">
+                <h2>🚌 Manage Buses</h2>
+
+                <div class="add-form">
+                    <h3>Add New Bus</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Bus Number</label>
+                            <input type="text" id="busNumber" placeholder="e.g., KL-01-1234">
+                        </div>
+                        <div class="form-group">
+                            <label>Capacity</label>
+                            <input type="number" id="busCapacity" placeholder="e.g., 50">
+                        </div>
+                        <div class="form-group">
+                            <label>Route</label>
+                            <select id="busRoute">
+                                <option value="">Select Route</option>
+                                <option value="Route A">Route A</option>
+                                <option value="Route B">Route B</option>
+                                <option value="Route C">Route C</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Driver</label>
+                            <select id="busDriver">
+                                <option value="">Select Driver</option>
+                                <option value="John Doe">John Doe</option>
+                                <option value="Jane Smith">Jane Smith</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="addBus()" class="add-btn">+ Add Bus</button>
+                </div>
+
+                <div class="data-table">
+                    <h3>Bus List</h3>
+                    <table id="busTable">
+                        <thead>
+                            <tr>
+                                <th>Bus Number</th>
+                                <th>Capacity</th>
+                                <th>Route</th>
+                                <th>Driver</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>KL-01-1234</td>
+                                <td>50</td>
+                                <td>Route A</td>
+                                <td>John Doe</td>
+                                <td><span class="status active">Active</span></td>
+                                <td>
+                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
+                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>KL-02-5678</td>
+                                <td>45</td>
+                                <td>Route B</td>
+                                <td>Jane Smith</td>
+                                <td><span class="status active">Active</span></td>
+                                <td>
+                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
+                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ===== MANAGE ROUTES SECTION ===== -->
+            <section id="routes" class="dashboard-section">
+                <h2>🗺️ Manage Routes</h2>
+
+                <div class="add-form">
+                    <h3>Add New Route</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Route Name</label>
+                            <input type="text" id="routeName" placeholder="e.g., Route D">
+                        </div>
+                        <div class="form-group">
+                            <label>Starting Point</label>
+                            <input type="text" id="routeStart" placeholder="e.g., Campus 1">
+                        </div>
+                        <div class="form-group">
+                            <label>Ending Point</label>
+                            <input type="text" id="routeEnd" placeholder="e.g., City Center">
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Stops</label>
+                            <input type="number" id="routeStops" placeholder="e.g., 8">
+                        </div>
+                    </div>
+                    <button onclick="addRoute()" class="add-btn">+ Add Route</button>
+                </div>
+
+                <div class="data-table">
+                    <h3>Routes List</h3>
+                    <table id="routeTable">
+                        <thead>
+                            <tr>
+                                <th>Route Name</th>
+                                <th>Start</th>
+                                <th>End</th>
+                                <th>Stops</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Route A</td>
+                                <td>Campus 1</td>
+                                <td>City Center</td>
+                                <td>8</td>
+                                <td>
+                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
+                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Route B</td>
+                                <td>Campus 2</td>
+                                <td>Railway Station</td>
+                                <td>6</td>
+                                <td>
+                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
+                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ===== MANAGE DRIVERS SECTION ===== -->
+            <section id="drivers" class="dashboard-section">
+                <h2>🧑‍✈️ Manage Drivers</h2>
+
+                <div class="add-form">
+                    <h3>Add New Driver</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Driver Name</label>
+                            <input type="text" id="driverName" placeholder="Enter full name">
+                        </div>
+                        <div class="form-group">
+                            <label>License Number</label>
+                            <input type="text" id="driverLicense" placeholder="e.g., DL-1234567890">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="driverPhone" placeholder="e.g., +91 9876543210">
+                        </div>
+                        <div class="form-group">
+                            <label>Experience (years)</label>
+                            <input type="number" id="driverExperience" placeholder="e.g., 5">
+                        </div>
+                    </div>
+                    <button onclick="addDriver()" class="add-btn">+ Add Driver</button>
+                </div>
+
+                <div class="data-table">
+                    <h3>Drivers List</h3>
+                    <table id="driverTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>License</th>
+                                <th>Phone</th>
+                                <th>Experience</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>DL-1234567890</td>
+                                <td>+91 9876543210</td>
+                                <td>10 years</td>
+                                <td>
+                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
+                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jane Smith</td>
+                                <td>DL-9876543210</td>
+                                <td>+91 8765432109</td>
+                                <td>7 years</td>
+                                <td>
+                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
+                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ===== STUDENTS SECTION ===== -->
+            <section id="students" class="dashboard-section">
+                <h2>👥 Students</h2>
+
+                <div class="data-table">
+                    <h3>Registered Students</h3>
+                    <table id="studentTable">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Route</th>
+                                <th>Bus Number</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2021001</td>
+                                <td>Alice Smith</td>
+                                <td>Route A</td>
+                                <td>KL-01-1234</td>
+                                <td><span class="status active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>2021002</td>
+                                <td>Bob Johnson</td>
+                                <td>Route B</td>
+                                <td>KL-02-5678</td>
+                                <td><span class="status active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>2021003</td>
+                                <td>Carol White</td>
+                                <td>Route A</td>
+                                <td>KL-01-1234</td>
+                                <td><span class="status inactive">Inactive</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="admin.js"></script>
+
+</body>
+</html>

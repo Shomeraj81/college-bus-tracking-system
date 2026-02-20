@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications</title>
+    <link rel="stylesheet" href="notification.css">
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <header class="top-bar">
+        <h2>Notifications</h2>
+        <button onclick="goBack()" class="back-btn">Back to Dashboard</button>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+
+        <div class="notification-header">
+            <h3>Recent Alerts</h3>
+            <button onclick="clearAll()" class="clear-btn">Clear All</button>
+        </div>
+
+        <div id="notificationList" class="notification-list">
+            <!-- Notifications will load dynamically -->
+        </div>
+
+    </div>
+
+<script src="notification.js"></script>
+</body>
+</html>

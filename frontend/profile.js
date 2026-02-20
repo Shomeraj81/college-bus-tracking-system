@@ -35,3 +35,13 @@ function toggleEdit() {
         alert("Profile Updated Successfully!");
     }
 }
+
+// ==========================
+// RETURN TO DASHBOARD
+// ==========================
+function goBack() {
+
+    // Change this if your dashboard filename is different
+    window.location.href = "student.html";
+
+}

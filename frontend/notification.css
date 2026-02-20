@@ -1,0 +1,98 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #eef2f7, #e3f2e8);
+}
+
+/* TOP BAR */
+.top-bar {
+    height: 60px;
+    background: linear-gradient(90deg, #16943a, #1fb64f);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.back-btn {
+    position: absolute;
+    right: 20px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    color: #16943a;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* MAIN */
+.container {
+    width: 80%;
+    margin: 40px auto;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.clear-btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background: #16943a;
+    color: white;
+    cursor: pointer;
+}
+
+.notification-list {
+    margin-top: 20px;
+}
+
+.notification-card {
+    background: white;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s ease;
+}
+
+.notification-card.unread {
+    border-left: 5px solid #16943a;
+    background: #f3fbf5;
+}
+
+.notification-card:hover {
+    transform: translateY(-3px);
+}
+
+.notification-text {
+    font-size: 14px;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: gray;
+}
+
+.mark-btn {
+    border: none;
+    background: #16943a;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}

@@ -185,3 +185,24 @@ button:hover {
         font-size: 22px;
     }
 }
+
+.auth-buttons{
+display:flex;
+gap:12px;
+margin-top:20px;
+}
+
+.auth-buttons button{
+flex:1;
+padding:12px;
+background:#1b8f3a;
+border:none;
+border-radius:8px;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.auth-buttons button:hover{
+background:#157a31;
+}

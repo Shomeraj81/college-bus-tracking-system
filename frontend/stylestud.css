@@ -118,3 +118,447 @@ body {
   border-radius: 8px;
   cursor: pointer;
 }
+.content-section {
+  display: none;
+}
+
+.content-section.active {
+  display: block;
+}
+
+/* ============================= */
+/* BUS SCHEDULE SECTION */
+/* ============================= */
+
+.schedule-card {
+  background: white;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  max-width: 950px;
+  margin-top: 10px;
+}
+/* ============================= */
+/* BUS SCHEDULE SECTION */
+/* ============================= */
+
+.schedule-card {
+  background: white;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  max-width: 950px;
+  margin-top: 10px;
+}
+
+/* ===== TABLE ===== */
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+/* ===== HEADER ===== */
+
+.schedule-table thead {
+  background: #f3f5f7;
+}
+
+.schedule-table th {
+  text-align: center;
+  font-weight: 600;
+  padding: 16px 14px;
+  color: #444;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+/* ===== BODY ===== */
+
+.schedule-table td {
+  padding: 16px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #555;
+  text-align: center;
+}
+
+/* ===== ROUTE SEARCH PANEL ===== */
+
+.route-search-panel {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.route-search-panel input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  width: 220px;
+}
+
+.route-search-panel input:focus {
+  border-color: #1b8f3a;
+  outline: none;
+  box-shadow: 0 0 5px rgba(27, 143, 58, 0.3);
+}
+
+.route-search-panel button {
+  background: #1b8f3a;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.route-search-panel button:hover {
+  background: #157a31;
+}
+
+/* ===== ROW HOVER ===== */
+
+.schedule-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.schedule-table tbody tr:hover {
+  background: #f9fbfd;
+  transform: scale(1.01);
+}
+.bus-row {
+  cursor: pointer;
+}
+
+.bus-row:hover {
+  background: #f3f5f7;
+}
+/* ===== BUS NUMBER STYLE ===== */
+
+.bus-id {
+  font-weight: 600;
+  color: #1b8f3a;
+}
+/* ===== TABLE ===== */
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+/* ===== HEADER ===== */
+
+.schedule-table thead {
+  background: #f3f5f7;
+}
+
+.schedule-table th {
+  text-align: center;
+  font-weight: 600;
+  padding: 16px 14px;
+  color: #444;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+/* ===== BODY ===== */
+
+.schedule-table td {
+  padding: 16px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #555;
+  text-align: center;
+}
+/* ===== BUS SEARCH BAR ===== */
+
+.schedule-search {
+  margin-bottom: 20px;
+}
+
+.schedule-search input {
+  width: 320px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.schedule-search input:focus {
+  border-color: #1b8f3a;
+  box-shadow: 0 0 5px rgba(27, 143, 58, 0.3);
+}
+.schedule-search {
+  margin-bottom: 20px;
+}
+
+.schedule-search input {
+  width: 360px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.schedule-search input:focus {
+  border-color: #1b8f3a;
+  box-shadow: 0 0 6px rgba(27, 143, 58, 0.3);
+}
+
+.route-search-panel {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.route-search-panel input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  width: 200px;
+}
+
+.route-search-panel input:focus {
+  border-color: #1b8f3a;
+  outline: none;
+  box-shadow: 0 0 5px rgba(27, 143, 58, 0.3);
+}
+
+.route-search-panel button {
+  background: #1b8f3a;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.route-search-panel button:hover {
+  background: #157a31;
+}
+
+/* ROUTE SEARCH BAR */
+
+.route-search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.route-search select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.route-search button {
+  background: #1b8f3a;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.route-search button:hover {
+  background: #157a31;
+}
+/* ===== ROW HOVER ===== */
+
+.schedule-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.schedule-table tbody tr:hover {
+  background: #f9fbfd;
+  transform: scale(1.01);
+}
+
+/* ===== BUS NUMBER STYLE ===== */
+
+.bus-id {
+  font-weight: 600;
+  color: #1b8f3a;
+}
+
+/* ===== STATUS BADGES ===== */
+
+.badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* ON TIME */
+
+.badge.ontime {
+  background: #e8f7ee;
+  color: #1b8f3a;
+}
+
+/* DELAYED */
+
+.badge.delay {
+  background: #ffe8e8;
+  color: #e53935;
+}
+
+/* ============================= */
+/* NOTIFICATIONS SECTION */
+/* ============================= */
+
+.notifications-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 700px;
+}
+
+/* notification card */
+
+.notification-card {
+  display: flex;
+  gap: 15px;
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  align-items: flex-start;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.notification-card {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* hover effect */
+
+.notification-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* unread indicator */
+
+.notification-card.unread {
+  border-left: 3px solid #1b8f3a;
+  background: #f8fff9;
+}
+
+/* icon */
+
+.notification-icon {
+  font-size: 22px;
+  background: #f3f6f8;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+/* content */
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.notification-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.notification-time {
+  font-size: 12px;
+  color: #999;
+}
+
+/* profile */
+
+.profile-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.edit-btn {
+  padding: 10px;
+  background: #1b8f3a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+/* ================= TOAST MESSAGE ================= */
+
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  background: white;
+  border-left: 4px solid #1b8f3a;
+  padding: 14px 18px;
+  min-width: 250px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  animation: toastSlide 0.4s ease;
+}
+
+.toast-success {
+  border-left-color: #1b8f3a;
+}
+
+@keyframes toastSlide {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

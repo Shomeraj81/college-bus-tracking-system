@@ -10,70 +10,229 @@
   </head>
 
   <body>
-    <!-- ===== TOP BAR ===== -->
     <header class="top-bar">
       <h2>Student Dashboard</h2>
       <button class="logout-btn">Logout</button>
     </header>
 
     <div class="dashboard-container">
-      <!-- ===== SIDEBAR ===== -->
+      <!-- SIDEBAR -->
       <aside class="sidebar">
         <h4 class="nav-title">NAVIGATION</h4>
 
-       <ul class="nav-links">
-        <li class="active" onclick="navigateTo('tracking')">🚌 Live Bus Tracking</li>
-        <li onclick="navigateTo('schedule')">📅 Bus Schedule</li>
-        <li onclick="navigateTo('notifications')">🔔 Notifications</li>
-        <li onclick="navigateTo('profile')">👤 Profile</li>
-        <li onclick="navigateTo('settings')">⚙️ Settings</li>
-      </ul>
+        <ul class="nav-links">
+          <li class="nav-item active" onclick="showSection('tracking')">
+            🚌 Live Bus Tracking
+          </li>
+
+          <li class="nav-item" onclick="showSection('schedule')">
+            📅 Bus Schedule
+          </li>
+
+          <li class="nav-item" onclick="showSection('notifications')">
+            🔔 Notifications
+          </li>
+
+          <li class="nav-item" onclick="showSection('profile')">👤 Profile</li>
+
+          <li class="nav-item">⚙️ Settings</li>
+        </ul>
       </aside>
 
-      <!-- ===== MAIN CONTENT ===== -->
+      <!-- MAIN CONTENT -->
       <main class="main-content">
-        <div class="tracking-layout">
-          <!-- LEFT MAP -->
-          <div class="map-container">
-            <div id="map"></div>
-          </div>
+        <!-- ================= LIVE TRACKING ================= -->
 
-          <!-- RIGHT INFO PANEL -->
-          <div class="info-container">
-            <div class="dashboard-card">
-              <h2>Bus Live Information</h2>
+        <section id="tracking" class="content-section active">
+          <div class="tracking-layout">
+            <div class="map-container">
+              <div id="map"></div>
+            </div>
 
-              <div class="info-row">
-                <label>Bus Number</label>
-                <span id="bus-number">KIIT-07</span>
+            <div class="info-container">
+              <div class="dashboard-card">
+                <h2>Bus Live Information</h2>
+
+                <div class="info-row">
+                  <label>Bus Number</label>
+                  <span id="bus-number">KIIT-07</span>
+                </div>
+
+                <div class="info-row">
+                  <label>Speed (km/h)</label>
+                  <span id="speed-display">70</span>
+                </div>
+
+                <div class="info-row">
+                  <label>Remaining Distance (km)</label>
+                  <span id="distance-display">0</span>
+                </div>
+
+                <div class="info-row">
+                  <label>ETA (minutes)</label>
+                  <span id="eta-display">0</span>
+                </div>
+
+                
               </div>
-
-              <div class="info-row">
-                <label>Speed (km/h)</label>
-                <span id="speed-display">70</span>
-              </div>
-
-              <div class="info-row">
-                <label>Remaining Distance (km)</label>
-                <span id="distance-display">0</span>
-              </div>
-
-              <div class="info-row">
-                <label>ETA (minutes)</label>
-                <span id="eta-display">0</span>
-              </div>
-
-              <button onclick="toggleBus()" class="control-btn">
-                Start / Pause Bus
-              </button>
             </div>
           </div>
-        </div>
+        </section>
+
+        <!-- ================= BUS SCHEDULE ================= -->
+
+        <section id="schedule" class="content-section">
+          <h2>Bus Schedule</h2>
+
+          <!-- ROUTE SEARCH -->
+          <div class="route-search-panel">
+            <input
+              type="text"
+              id="fromLocation"
+              placeholder="From (e.g. Campus 12)"
+            />
+
+            <input
+              type="text"
+              id="toLocation"
+              placeholder="To (e.g. Campus 25)"
+            />
+
+            <button onclick="searchBus()">Search</button>
+
+            <button onclick="resetSearch()">Reset</button>
+          </div>
+
+          <!-- SCHEDULE TABLE -->
+          <div class="schedule-card">
+            <table class="schedule-table">
+              <thead>
+                <tr>
+                  <th>Bus</th>
+                  <th>Route</th>
+                  <th>Departure</th>
+                  <th>Arrival</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr class="bus-row" data-busid="bus001">
+                  <td class="bus-id">🚌 KIIT-07</td>
+                  <td>Campus 12 → Campus 25</td>
+                  <td>08:00 AM</td>
+                  <td>08:45 AM</td>
+                  <td><span class="badge ontime">On Time</span></td>
+                </tr>
+
+                <tr class="bus-row" data-busid="bus002">
+                  <td class="bus-id">🚌 KIIT-09</td>
+                  <td>Campus 5 → Railway Station</td>
+                  <td>09:15 AM</td>
+                  <td>10:00 AM</td>
+                  <td><span class="badge delay">Delayed</span></td>
+                </tr>
+
+                <tr class="bus-row" data-busid="bus003">
+                  <td class="bus-id">🚌 KIIT-03</td>
+                  <td>City Center → Campus 1</td>
+                  <td>07:30 AM</td>
+                  <td>08:20 AM</td>
+                  <td><span class="badge ontime">On Time</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================= NOTIFICATIONS ================= -->
+
+        <section id="notifications" class="content-section">
+          <h2>Notifications</h2>
+
+          <div class="notifications-container">
+            <div class="notification-card unread">
+              <div class="notification-icon">🚌</div>
+
+              <div class="notification-content">
+                <p class="notification-title">Bus arriving soon</p>
+                <p class="notification-text">
+                  Bus KIIT-07 will reach Campus 12 in about 10 minutes.
+                </p>
+                <span class="notification-time">2 min ago</span>
+              </div>
+            </div>
+
+            <div class="notification-card">
+              <div class="notification-icon">⚠️</div>
+
+              <div class="notification-content">
+                <p class="notification-title">Bus Delay</p>
+                <p class="notification-text">
+                  Bus KIIT-09 is delayed due to traffic congestion.
+                </p>
+                <span class="notification-time">15 min ago</span>
+              </div>
+            </div>
+
+            <div class="notification-card">
+              <div class="notification-icon">📢</div>
+
+              <div class="notification-content">
+                <p class="notification-title">Route Update</p>
+                <p class="notification-text">
+                  Route B buses will temporarily stop at Campus 8 today.
+                </p>
+                <span class="notification-time">1 hour ago</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PROFILE ================= -->
+
+        <section id="profile" class="content-section">
+          <h2>Student Profile</h2>
+
+          <div class="profile-card">
+            <div class="profile-row">
+              <label>Name</label>
+              <span>John Doe</span>
+            </div>
+
+            <div class="profile-row">
+              <label>Student ID</label>
+              <span>2021001</span>
+            </div>
+
+            <div class="profile-row">
+              <label>Bus Number</label>
+              <span>KIIT-07</span>
+            </div>
+
+            <div class="profile-row">
+              <label>Route</label>
+              <span>Campus 12 → Campus 25</span>
+            </div>
+
+            <div class="profile-row">
+              <label>Email</label>
+              <span>john@kiit.ac.in</span>
+            </div>
+
+            <button class="edit-btn">Edit Profile</button>
+          </div>
+        </section>
       </main>
     </div>
 
+    <!-- Toast container -->
+    <div id="toast-container"></div>
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="scriptstudent.js"></script>
-    <script src="scriptstudent2.js"></script>
+    
+    >
   </body>
 </html>

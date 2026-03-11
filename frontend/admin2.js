@@ -1,351 +1,336 @@
+const API = "http://localhost:5000";
+
+let selectedType = "info";
+
 /* ===============================
 SECTION NAVIGATION
 ================================ */
 
 function showSection(sectionId) {
-
-    document.querySelectorAll(".dashboard-section").forEach(section=>{
-        section.classList.remove("active");
-    });
-
+    document.querySelectorAll(".dashboard-section").forEach(s => s.classList.remove("active"));
     document.getElementById(sectionId).classList.add("active");
 
-    document.querySelectorAll(".nav-item").forEach(item=>{
-        item.classList.remove("active");
-    });
+    document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+    const sideLink = document.querySelector(`[href="#${sectionId}"]`);
+    if (sideLink) sideLink.classList.add("active");
 
-    document.querySelector(`[href="#${sectionId}"]`).classList.add("active");
-}
+    // Sync mobile bottom nav
+    document.querySelectorAll(".admin-bottom-nav a").forEach(i => i.classList.remove("active"));
+    const bottomLink = document.querySelector(`.admin-bottom-nav a[href="#${sectionId}"]`);
+    if (bottomLink) bottomLink.classList.add("active");
 
-
-/* ===============================
-LOAD BUSES FROM DATABASE
-================================ */
-
-async function loadBuses(){
-
-    const res = await fetch("http://localhost:5000/api/bus");
-    const buses = await res.json();
-
-    const tableBody = document.querySelector("#busTable tbody");
-    tableBody.innerHTML = "";
-
-    buses.forEach(bus => {
-
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${bus.busNumber}</td>
-            <td>${bus.capacity}</td>
-            <td>${bus.routeName}</td>
-            <td>${bus.departureTime}</td>
-            <td>${bus.arrivalTime}</td>
-            <td><span class="status active">Active</span></td>
-            <td>
-                <button onclick="deleteBus('${bus._id}')" class="delete-btn">Delete</button>
-            </td>
-        `;
-
-        tableBody.appendChild(row);
-
-    });
-
+    if (sectionId === "students")      loadStudents();
+    if (sectionId === "notifications") loadNotifications();
 }
 
 /* ===============================
-LOAD ROUTES FROM DATABASE
+LOAD BUSES
 ================================ */
 
-async function loadRoutes(){
+async function loadBuses() {
+    try {
+        const res = await fetch(API + "/api/bus");
+        const buses = await res.json();
+        const tbody = document.querySelector("#busTable tbody");
+        tbody.innerHTML = "";
 
-    const res = await fetch("http://localhost:5000/api/route");
-    const routes = await res.json();
+        if (!buses.length) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#999;padding:20px;">No buses added yet</td></tr>`;
+            return;
+        }
 
-    const tableBody = document.querySelector("#routeTable tbody");
-
-    tableBody.innerHTML = "";
-
-    routes.forEach(route => {
-
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${route.routeName}</td>
-            <td>${route.startPoint}</td>
-            <td>${route.endPoint}</td>
-            <td>-</td>
-            <td>
-                <button onclick="deleteRoute('${route._id}')" class="delete-btn">Delete</button>
-            </td>
-        `;
-
-        tableBody.appendChild(row);
-
-    });
-
-}
-//load route dropdown
-async function loadRouteDropdown(){
-
-    const res = await fetch("http://localhost:5000/api/route");
-    const routes = await res.json();
-
-    const dropdown = document.getElementById("busRoute");
-
-    dropdown.innerHTML = `<option value="">Select Route</option>`;
-
-    routes.forEach(route => {
-
-        const option = document.createElement("option");
-
-        option.value = route.routeName;
-        option.textContent = route.routeName;
-
-        dropdown.appendChild(option);
-
-    });
-
+        buses.forEach(bus => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${bus.busNumber}</td>
+                <td>${bus.capacity}</td>
+                <td>${bus.routeName}</td>
+                <td>${bus.departureTime}</td>
+                <td>${bus.arrivalTime}</td>
+                <td><span class="status active">Active</span></td>
+                <td><button onclick="deleteBus('${bus._id}')" class="delete-btn">Delete</button></td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (err) {
+        console.error("Error loading buses:", err);
+    }
 }
 
 /* ===============================
-ADD BUS (CONNECTED TO BACKEND)
+LOAD ROUTES
 ================================ */
 
-async function addBus(){
+async function loadRoutes() {
+    try {
+        const res = await fetch(API + "/api/route");
+        const routes = await res.json();
+        const tbody = document.querySelector("#routeTable tbody");
+        tbody.innerHTML = "";
 
-    let number = document.getElementById("busNumber").value;
-    let capacity = document.getElementById("busCapacity").value;
-    let route = document.getElementById("busRoute").value;
+        if (!routes.length) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#999;padding:20px;">No routes added yet</td></tr>`;
+            return;
+        }
 
-    let departureTime = document.getElementById("departureTime").value;
-    let arrivalTime = document.getElementById("arrivalTime").value;
+        routes.forEach(route => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${route.routeName}</td>
+                <td>${route.startPoint}</td>
+                <td>${route.endPoint}</td>
+                <td><button onclick="deleteRoute('${route._id}')" class="delete-btn">Delete</button></td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (err) {
+        console.error("Error loading routes:", err);
+    }
+}
 
-    if(number==="" || capacity==="" || departureTime==="" || arrivalTime===""){
+/* ===============================
+ROUTE DROPDOWN
+================================ */
+
+async function loadRouteDropdown() {
+    try {
+        const res = await fetch(API + "/api/route");
+        const routes = await res.json();
+        const dropdown = document.getElementById("busRoute");
+        dropdown.innerHTML = `<option value="">Select Route</option>`;
+        routes.forEach(route => {
+            const opt = document.createElement("option");
+            opt.value = route.routeName;
+            opt.textContent = route.routeName;
+            dropdown.appendChild(opt);
+        });
+    } catch (err) {
+        console.error("Error loading route dropdown:", err);
+    }
+}
+
+/* ===============================
+ADD BUS
+================================ */
+
+async function addBus() {
+    const number  = document.getElementById("busNumber").value.trim();
+    const capacity= document.getElementById("busCapacity").value.trim();
+    const route   = document.getElementById("busRoute").value;
+    const dep     = document.getElementById("departureTime").value.trim();
+    const arr     = document.getElementById("arrivalTime").value.trim();
+
+    if (!number || !capacity || !dep || !arr) {
         alert("Fill all fields");
         return;
     }
 
-    try{
-
-        const response = await fetch("http://localhost:5000/api/bus",{
-
-            method:"POST",
-
-            headers:{
-                "Content-Type":"application/json"
-            },
-
-            body:JSON.stringify({
-                busNumber:number,
-                capacity:capacity,
-                routeName:route,
-                departureTime:departureTime,
-                arrivalTime:arrivalTime
-            })
-
+    try {
+        await fetch(API + "/api/bus", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ busNumber: number, capacity, routeName: route, departureTime: dep, arrivalTime: arr })
         });
-
-        await response.json();
-
         loadBuses();
-
         alert("Bus added successfully");
-
-    }catch(error){
-
-        console.error("Error adding bus:", error);
-
+    } catch (err) {
+        console.error("Error adding bus:", err);
     }
-
 }
 
 /* ===============================
 DELETE BUS
 ================================ */
 
-async function deleteBus(id){
-
-    if(!confirm("Delete this bus?")) return;
-
-    await fetch(`http://localhost:5000/api/bus/${id}`,{
-        method:"DELETE"
-    });
-
+async function deleteBus(id) {
+    if (!confirm("Delete this bus?")) return;
+    await fetch(`${API}/api/bus/${id}`, { method: "DELETE" });
     loadBuses();
-
 }
 
-
 /* ===============================
-ADD ROUTE (CONNECTED TO BACKEND)
+ADD ROUTE
 ================================ */
 
-async function addRoute(){
+async function addRoute() {
+    const name  = document.getElementById("routeName").value.trim();
+    const start = document.getElementById("routeStart").value.trim();
+    const end   = document.getElementById("routeEnd").value.trim();
 
-    let name = document.getElementById("routeName").value;
-    let start = document.getElementById("routeStart").value;
-    let end = document.getElementById("routeEnd").value;
+    if (!name) { alert("Enter route name"); return; }
 
-    if(name === ""){
-        alert("Enter route name");
-        return;
-    }
-
-    await fetch("http://localhost:5000/api/route",{
-
-        method:"POST",
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify({
-            routeName:name,
-            startPoint:start,
-            endPoint:end
-        })
-
+    await fetch(API + "/api/route", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ routeName: name, startPoint: start, endPoint: end })
     });
 
     loadRoutes();
-   // table.appendChild(row);
-
     loadRouteDropdown();
-
     alert("Route added successfully");
-
 }
-
 
 /* ===============================
 DELETE ROUTE
 ================================ */
 
-async function deleteRoute(id){
-
-    if(!confirm("Delete this route?")) return;
-
-    await fetch(`http://localhost:5000/api/route/${id}`,{
-        method:"DELETE"
-    });
-
+async function deleteRoute(id) {
+    if (!confirm("Delete this route?")) return;
+    await fetch(`${API}/api/route/${id}`, { method: "DELETE" });
     loadRoutes();
     loadRouteDropdown();
-
 }
-
-
-
 
 /* ===============================
-EDIT / DELETE BUTTONS (UI)
+LOAD STUDENTS
 ================================ */
 
-function attachRowEvents(row){
+async function loadStudents() {
+    try {
+        const res      = await fetch(API + "/students");
+        const students = await res.json();
+        const tbody    = document.querySelector("#studentTable tbody");
+        tbody.innerHTML = "";
 
-    let editBtn = row.querySelector(".edit-btn");
-    let deleteBtn = row.querySelector(".delete-btn");
-
-    editBtn.onclick = function(){
-
-        let cells = row.querySelectorAll("td");
-
-        for(let i=0;i<cells.length-1;i++){
-
-            let old = cells[i].innerText;
-
-            cells[i].innerHTML =
-            `<input value="${old}" style="width:90%">`;
-
+        if (!students.length) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#999;padding:30px;">No students registered yet</td></tr>`;
+            return;
         }
 
-        editBtn.innerText="Save";
+        students.forEach(student => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${student.id || "-"}</td>
+                <td>${student.name || student.username}</td>
+                <td>${student.roll || "-"}</td>
+                <td>${student.branch || "-"}</td>
+                <td>${student.email || "-"}</td>
+                <td>${student.phone || "-"}</td>
+                <td><span class="status active">Active</span></td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (err) {
+        document.querySelector("#studentTable tbody").innerHTML =
+            `<tr><td colspan="7" style="text-align:center;color:#e53935;padding:30px;">⚠️ Could not load students. Is the server running?</td></tr>`;
+    }
+}
 
-        editBtn.onclick=function(){
+/* ===============================
+NOTIFICATION TYPE SELECTOR
+================================ */
 
-            let inputs=row.querySelectorAll("input");
+function selectType(type, el) {
+    selectedType = type;
+    document.querySelectorAll(".type-chip").forEach(c => {
+        c.className = "type-chip"; // reset
+    });
+    el.classList.add(`selected-${type}`);
+}
 
-            inputs.forEach(input=>{
-                input.parentElement.innerText=input.value;
+/* ===============================
+SEND NOTIFICATION
+================================ */
+
+async function sendNotification() {
+    const title   = document.getElementById("notifTitle").value.trim();
+    const message = document.getElementById("notifMessage").value.trim();
+
+    if (!title || !message) {
+        alert("Please enter both title and message");
+        return;
+    }
+
+    try {
+        const res = await fetch(API + "/notifications", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, message, type: selectedType })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            document.getElementById("notifTitle").value   = "";
+            document.getElementById("notifMessage").value = "";
+            alert("✅ Notification sent to all students!");
+            loadNotifications();
+        }
+    } catch (err) {
+        alert("❌ Failed to send. Is the server running?");
+    }
+}
+
+/* ===============================
+LOAD SENT NOTIFICATIONS
+================================ */
+
+async function loadNotifications() {
+    try {
+        const res    = await fetch(API + "/notifications");
+        const notifs = await res.json();
+        const list   = document.getElementById("notifList");
+
+        if (!notifs.length) {
+            list.innerHTML = `<p class="notif-empty">No notifications sent yet</p>`;
+            return;
+        }
+
+        list.innerHTML = "";
+
+        notifs.forEach(n => {
+            const icons = { info: "📘", warning: "⚠️", alert: "🚨" };
+            const icon  = icons[n.type] || "📢";
+            const time  = new Date(n.timestamp).toLocaleString("en-IN", {
+                day: "numeric", month: "short", year: "numeric",
+                hour: "2-digit", minute: "2-digit"
             });
 
-            editBtn.innerText="Edit";
+            const div = document.createElement("div");
+            div.className = `notif-item ${n.type === "info" ? "" : n.type}`;
+            div.innerHTML = `
+                <div class="notif-item-icon">${icon}</div>
+                <div class="notif-item-body">
+                    <div class="notif-item-title">${n.title}</div>
+                    <div class="notif-item-msg">${n.message}</div>
+                    <div class="notif-item-time">${time}</div>
+                </div>
+                <button class="notif-delete-btn" onclick="deleteNotification(${n.id})">Delete</button>
+            `;
+            list.appendChild(div);
+        });
 
-            attachRowEvents(row);
-
-        };
-
-    };
-
-    deleteBtn.onclick=function(){
-
-        if(confirm("Delete this row?")){
-            row.remove();
-        }
-
-    };
-
-}
-/* ================= LOAD STUDENTS ================= */
-const API = "http://localhost:5000"
-async function loadStudents(){
-
-try{
-
-let res = await fetch(API + "#students")
-
-let students = await res.json()
-
-let table = document.querySelector("#studentTable tbody")
-
-table.innerHTML=""
-
-students.forEach((student,i)=>{
-
-let row = `
-<tr>
-<td>${2000+i}</td>
-<td>${student.username}</td>
-<td>Not Assigned</td>
-<td>Not Assigned</td>
-<td><span class="status active">Active</span></td>
-</tr>
-`
-
-table.innerHTML += row
-
-})
-
-}
-catch(err){
-
-console.log("Error loading students:",err)
-
+    } catch (err) {
+        document.getElementById("notifList").innerHTML =
+            `<p class="notif-empty" style="color:#e53935;">⚠️ Could not load notifications.</p>`;
+    }
 }
 
+/* ===============================
+DELETE NOTIFICATION
+================================ */
+
+async function deleteNotification(id) {
+    if (!confirm("Delete this notification?")) return;
+    await fetch(`${API}/notifications/${id}`, { method: "DELETE" });
+    loadNotifications();
 }
 
 /* ===============================
 LOGOUT
 ================================ */
 
-function logout(){
-
+function logout() {
     sessionStorage.clear();
-    window.location.href="index.html";
-
+    window.location.href = "index.html";
 }
 
-
 /* ===============================
-INITIAL PAGE LOAD
+PAGE LOAD
 ================================ */
 
-document.addEventListener("DOMContentLoaded",()=>{
-
+document.addEventListener("DOMContentLoaded", () => {
     loadBuses();
     loadRoutes();
-    loadRouteDropdown(); 
-    loadStudents();
-
+    loadRouteDropdown();
 });

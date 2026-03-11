@@ -4,7 +4,7 @@ const socket = io("http://localhost:5000");
 var map = L.map("map").setView([20.353, 85.819], 15);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "© OpenStreetMap contributors",
+    attribution: "© OpenStreetMap contributors",
 }).addTo(map);
 
 
@@ -13,226 +13,333 @@ let studentLat = null;
 let studentLng = null;
 
 navigator.geolocation.getCurrentPosition(function (position) {
-  studentLat = position.coords.latitude;
-  studentLng = position.coords.longitude;
+    studentLat = position.coords.latitude;
+    studentLng = position.coords.longitude;
 
-  console.log("Student location:", studentLat, studentLng);
-
-  L.marker([studentLat, studentLng])
-    .addTo(map)
-    .bindPopup("You are here");
+    L.marker([studentLat, studentLng])
+     .addTo(map)
+     .bindPopup("You are here");
 });
 
 
 // ================= BUS ICON =================
 var busIcon = L.icon({
-  iconUrl:
-    "https://toppng.com/uploads/preview/bus-top-view-clip-art-bus-icon-top-view-11562896756ifkgek2ydy.png",
-  iconSize: [40, 40],
+    iconUrl: "https://toppng.com/uploads/preview/bus-top-view-clip-art-bus-icon-top-view-11562896756ifkgek2ydy.png",
+    iconSize: [40, 40],
 });
 
-
-// ================= BUS MARKER =================
 var busMarker = L.marker([20.353, 85.819], { icon: busIcon }).addTo(map);
 
 
 // ================= SELECTED BUS =================
 const activeBus = localStorage.getItem("selectedBusNumber");
-socket.emit("joinBus", activeBus);
-
-console.log("Tracking bus:", activeBus);
+if (activeBus) socket.emit("joinBus", activeBus);
 
 
-// ================= SOCKET LISTENER =================
-socket.on("busLocationUpdated",(bus)=>{
+// ================= SOCKET: BUS LOCATION =================
+socket.on("busLocationUpdated", (bus) => {
 
-  
+    const lat = bus.lat;
+    const lng = bus.lng;
 
-   console.log("Selected bus update:", bus);
-  const lat = bus.lat;
-  const lng = bus.lng;
+    busMarker.setLatLng([lat, lng]);
+    map.panTo([lat, lng]);
 
-  // move bus marker
-  busMarker.setLatLng([lat, lng]);
+    document.getElementById("speed-display").innerText = bus.speed;
 
-  // follow bus
-  map.panTo([lat, lng]);
+    if (studentLat && studentLng) {
+        const distance = calculateDistance(studentLat, studentLng, lat, lng);
+        let eta = (distance / bus.speed) * 60;
 
-  // update speed
-  document.getElementById("speed-display").innerText = bus.speed;
-
-  // calculate ETA if student location exists
-  if (studentLat && studentLng) {
-
-    const distance = calculateDistance(
-      studentLat,
-      studentLng,
-      lat,
-      lng
-    );
-
-    let eta = (distance / bus.speed) * 60;
-
-    if (distance < 0.02) {
-
-      document.getElementById("eta-display").innerText = "Arrived";
-      document.getElementById("distance-display").innerText = "0";
-
-    } else if (distance < 0.05) {
-
-      document.getElementById("eta-display").innerText = "Arriving";
-
-    } else {
-
-      document.getElementById("eta-display").innerText = eta.toFixed(1);
-      document.getElementById("distance-display").innerText =
-        distance.toFixed(2);
-
+        if (distance < 0.02) {
+            document.getElementById("eta-display").innerText      = "Arrived";
+            document.getElementById("distance-display").innerText = "0";
+        } else if (distance < 0.05) {
+            document.getElementById("eta-display").innerText = "Arriving";
+        } else {
+            document.getElementById("eta-display").innerText      = eta.toFixed(1);
+            document.getElementById("distance-display").innerText = distance.toFixed(2);
+        }
     }
-  }
+});
+
+
+// ================= SOCKET: LIVE NOTIFICATIONS =================
+let unreadCount = 0;
+
+socket.on("newNotification", (notif) => {
+
+    // Add to top of notifications container if section is open
+    prependNotification(notif);
+
+    // Increment badge
+    unreadCount++;
+    updateBadge();
+
+    // Show toast popup
+    showToast(`📢 ${notif.title}: ${notif.message}`, notif.type);
+
 });
 
 
 // ================= DISTANCE FUNCTION =================
 function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) ** 2;
-
-  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+    const R    = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a    =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) ** 2;
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
 
 
 // ================= SECTION SWITCHING =================
 function showSection(sectionId) {
-  document
-    .querySelectorAll(".content-section")
-    .forEach((section) => section.classList.remove("active"));
+    document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+    document.getElementById(sectionId).classList.add("active");
+    if (event && event.currentTarget) event.currentTarget.classList.add("active");
+    if (sectionId === "notifications") {
+        loadNotifications();
+        unreadCount = 0;
+        updateBadge();
+    }
+}
 
-  document.getElementById(sectionId).classList.add("active");
+// Mobile bottom nav
+function showSectionMobile(sectionId, el) {
+    document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
+    document.getElementById(sectionId).classList.add("active");
+    document.querySelectorAll(".bottom-nav li").forEach(i => i.classList.remove("active"));
+    el.classList.add("active");
+    if (sectionId === "notifications") {
+        loadNotifications();
+        unreadCount = 0;
+        updateBadge();
+    }
+}
+
+
+// ================= NOTIFICATION BADGE =================
+function updateBadge() {
+    const badges = [
+        document.getElementById("notifBadge"),
+        document.getElementById("notifBadgeBottom")
+    ];
+    badges.forEach(badge => {
+        if (!badge) return;
+        if (unreadCount > 0) {
+            badge.style.display = "inline-block";
+            badge.innerText = unreadCount;
+        } else {
+            badge.style.display = "none";
+        }
+    });
+}
+
+
+// ================= LOAD NOTIFICATIONS FROM SERVER =================
+async function loadNotifications() {
+    const container = document.getElementById("notifContainer");
+    container.innerHTML = "";
+
+    try {
+        const res    = await fetch("http://localhost:5000/notifications");
+        const notifs = await res.json();
+
+        if (!notifs.length) {
+            container.innerHTML = `<p style="text-align:center;color:#aab0bc;padding:40px;">No notifications yet</p>`;
+            return;
+        }
+
+        notifs.forEach(n => container.appendChild(buildNotifCard(n)));
+
+    } catch (err) {
+        container.innerHTML = `<p style="text-align:center;color:#e53935;padding:40px;">⚠️ Could not load notifications</p>`;
+    }
+}
+
+
+// ================= BUILD NOTIFICATION CARD =================
+function buildNotifCard(n) {
+
+    const icons = { info: "📘", warning: "⚠️", alert: "🚨" };
+    const icon  = icons[n.type] || "📢";
+
+    const time = new Date(n.timestamp).toLocaleString("en-IN", {
+        day: "numeric", month: "short", year: "numeric",
+        hour: "2-digit", minute: "2-digit"
+    });
+
+    const card = document.createElement("div");
+    card.className = `notification-card ${n.type === "info" ? "unread" : ""}`;
+    card.style.borderLeft = n.type === "warning" ? "3px solid #FFC107"
+                          : n.type === "alert"   ? "3px solid #e91e63"
+                          : "3px solid #1b8f3a";
+
+    card.innerHTML = `
+        <div class="notification-icon">${icon}</div>
+        <div class="notification-content">
+            <p class="notification-title">${n.title}</p>
+            <p class="notification-text">${n.message}</p>
+            <span class="notification-time">${time}</span>
+        </div>
+    `;
+
+    return card;
+}
+
+
+// ================= PREPEND SINGLE NOTIFICATION (live) =================
+function prependNotification(n) {
+    const container = document.getElementById("notifContainer");
+    // If "no notifications" placeholder is showing, clear it
+    if (container.querySelector("p")) container.innerHTML = "";
+    container.prepend(buildNotifCard(n));
 }
 
 
 // ================= ROUTE SEARCH =================
 async function searchBus() {
-  const from = document.getElementById("fromLocation").value;
-  const to = document.getElementById("toLocation").value;
+    const from = document.getElementById("fromLocation").value;
+    const to   = document.getElementById("toLocation").value;
 
-  const res = await fetch(
-    `http://localhost:5000/api/buses/schedule?from=${from}&to=${to}`
-  );
+    const res = await fetch(
+        `http://localhost:5000/api/buses/schedule?from=${from}&to=${to}`
+    );
 
-  const buses = await res.json();
+    const buses    = await res.json();
+    const tableBody = document.querySelector(".schedule-table tbody");
 
-  const tableBody = document.querySelector(".schedule-table tbody");
+    if (!Array.isArray(buses) || buses.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No buses found</td></tr>`;
+        return;
+    }
 
-  if (!Array.isArray(buses) || buses.length === 0) {
-    tableBody.innerHTML =
-      `<tr><td colspan="5">No buses found</td></tr>`;
-    return;
-  }
+    tableBody.innerHTML = "";
 
-  tableBody.innerHTML = "";
+    buses.forEach(bus => {
+        tableBody.innerHTML += `
+            <tr class="bus-row" data-busid="${bus._id}" data-busnumber="${bus.busNumber}">
+                <td class="bus-id">🚌 ${bus.busNumber}</td>
+                <td>${bus.from} → ${bus.to}</td>
+                <td>${bus.departure}</td>
+                <td>${bus.arrival}</td>
+                <td><span class="badge ontime">On Time</span></td>
+            </tr>
+        `;
+    });
 
-  buses.forEach((bus) => {
-    const row = `
-<tr class="bus-row" data-busid="${bus._id}" data-busnumber="${bus.busNumber}">
-<td class="bus-id">🚌 ${bus.busNumber}</td>
-<td>${bus.from} → ${bus.to}</td>
-<td>${bus.departure}</td>
-<td>${bus.arrival}</td>
-<td><span class="badge ontime">On Time</span></td>
-</tr>
-`;
-
-    tableBody.innerHTML += row;
-  });
-
-  enableBusClicks();
+    enableBusClicks();
 }
 
 
 // ================= ENABLE BUS CLICK =================
 function enableBusClicks() {
-  document.querySelectorAll(".bus-row").forEach((row) => {
+    document.querySelectorAll(".bus-row").forEach(row => {
+        row.addEventListener("click", async function () {
+            const busId     = this.dataset.busid;
+            const busNumber = this.dataset.busnumber;
 
-    row.addEventListener("click", async function () {
+            localStorage.setItem("selectedBusId",     busId);
+            localStorage.setItem("selectedBusNumber",  busNumber);
 
-      const busId = this.dataset.busid;
-      const busNumber = this.dataset.busnumber;
+            showToast(`🚌 Bus ${busNumber} selected. Starting tracking...`, "info");
 
-      localStorage.setItem("selectedBusId", busId);
-      localStorage.setItem("selectedBusNumber", busNumber);
+            try {
+                const res = await fetch(`http://localhost:5000/api/buses/track/${busId}`);
+                await res.json();
+            } catch {
+                console.log("Backend not reachable");
+            }
 
-      console.log("Selected Bus ID:", busId);
-
-      showBusSelectionMessage(busId);
-
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/buses/track/${busId}`
-        );
-
-        const data = await res.json();
-
-        console.log(data.message);
-
-      } catch {
-        console.log("Backend not reachable");
-      }
-
-      setTimeout(() => {
-        showSection("tracking");
-      }, 1500);
+            setTimeout(() => showSection("tracking"), 1500);
+        });
     });
-  });
 }
 
 
 // ================= RESET SEARCH =================
 function resetSearch() {
-  document.getElementById("fromLocation").value = "";
-  document.getElementById("toLocation").value = "";
+    document.getElementById("fromLocation").value = "";
+    document.getElementById("toLocation").value   = "";
+    document.querySelector(".schedule-table tbody").innerHTML =
+        `<tr><td colspan="5" style="text-align:center;">Search to view buses</td></tr>`;
+}
 
-  const tableBody = document.querySelector(".schedule-table tbody");
 
-  tableBody.innerHTML =
-    `<tr><td colspan="5">Search to view buses</td></tr>`;
+// ================= LOAD PROFILE =================
+function loadProfile() {
+    const name     = sessionStorage.getItem("name")     || "—";
+    const username = sessionStorage.getItem("username")  || "—";
+    const roll     = sessionStorage.getItem("roll")      || "—";
+    const branch   = sessionStorage.getItem("branch")    || "—";
+    const email    = sessionStorage.getItem("email")     || "—";
+    const phone    = sessionStorage.getItem("phone")     || "—";
+
+    document.getElementById("prof_name").innerText     = name;
+    document.getElementById("prof_username").innerText = username;
+    document.getElementById("prof_roll").innerText     = roll;
+    document.getElementById("prof_branch").innerText   = branch;
+    document.getElementById("prof_email").innerText    = email;
+    document.getElementById("prof_phone").innerText    = phone;
+
+    // Set avatar initials
+    const avatar = document.getElementById("profileAvatar");
+    const initials = name !== "—"
+        ? name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)
+        : username[0].toUpperCase();
+    avatar.innerText = initials;
+
+    // Bus info from localStorage (set when student picks a bus)
+    const busNumber = localStorage.getItem("selectedBusNumber");
+    if (busNumber) {
+        document.getElementById("prof_bus").innerText = busNumber;
+    }
+}
+
+
+// ================= LOGOUT =================
+function logout() {
+    sessionStorage.clear();
+    window.location.href = "index.html";
+}
+
+
+// ================= TOAST =================
+function showToast(message, type) {
+    const container = document.getElementById("toast-container");
+    const toast     = document.createElement("div");
+
+    const colors = {
+        info:    "border-left-color: #1b8f3a;",
+        warning: "border-left-color: #FFC107;",
+        alert:   "border-left-color: #e91e63;"
+    };
+
+    toast.className = "toast";
+    toast.style.cssText = colors[type] || colors.info;
+    toast.innerText = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => toast.remove(), 4000);
 }
 
 
 // ================= PAGE LOAD =================
 document.addEventListener("DOMContentLoaded", () => {
 
-  const busDisplay = document.getElementById("bus-number");
+    // Set bus number in tracking panel
+    const busDisplay = document.getElementById("bus-number");
+    if (busDisplay && activeBus) busDisplay.innerText = activeBus;
 
-  if (busDisplay && activeBus) {
-      busDisplay.innerText = activeBus;
-  }
+    // Load profile from session
+    loadProfile();
 
+    // Load notifications initially
+    loadNotifications();
 });
-
-
-// ================= MESSAGE =================
-function showBusSelectionMessage(busId) {
-  const container = document.getElementById("toast-container");
-
-  const toast = document.createElement("div");
-  toast.className = "toast toast-success";
-
-  toast.innerText =
-    `🚌 Bus ${busId} selected. Starting tracking...`;
-
-  container.appendChild(toast);
-
-  setTimeout(() => {
-    toast.remove();
-  }, 3000);
-}

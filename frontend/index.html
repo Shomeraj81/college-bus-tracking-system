@@ -4,6 +4,211 @@
 <meta charset="UTF-8">
 <title>KIIT Student Bus Facility</title>
 <link rel="stylesheet" href="style.css">
+<style>
+/* ===== ROLE TABS ===== */
+.role-tabs {
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid #e2e8f0;
+    margin-bottom: 24px;
+}
+
+.role-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #f8fafc;
+    color: #6b7a8d;
+    transition: all 0.2s ease;
+    border: none;
+    outline: none;
+    width: auto;
+    margin: 0;
+    box-shadow: none;
+}
+
+.role-tab.active {
+    background: linear-gradient(135deg, #1b8f3a, #26a84a);
+    color: white;
+    box-shadow: none;
+}
+
+.role-tab:hover:not(.active) {
+    background: #eef2f7;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ===== STUDENT PANEL ===== */
+.student-panel {
+    text-align: center;
+    padding: 10px 0 6px;
+}
+
+.student-panel p {
+    color: #6b7a8d;
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.student-panel .big-signup-btn {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #1b8f3a, #26a84a);
+    color: white;
+    border: none;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 10px rgba(27,143,58,0.35);
+    margin-top: 0;
+}
+
+.student-panel .big-signup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(27,143,58,0.45);
+}
+
+.already-account {
+    margin-top: 16px;
+    font-size: 13px;
+    color: #6b7a8d;
+}
+
+.already-account a {
+    color: #1b8f3a;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.already-account a:hover {
+    text-decoration: underline;
+}
+
+/* ===== STUDENT LOGIN MINI FORM ===== */
+.student-login-form {
+    display: none;
+    margin-top: 16px;
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 16px;
+}
+
+.student-login-form.open {
+    display: block;
+}
+
+/* ===== SIGNUP MODAL ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal-box {
+    background: white;
+    padding: 32px 30px;
+    border-radius: 16px;
+    width: 430px;
+    max-width: 95vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: fadeInCard 0.3s ease forwards;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-box h2 {
+    text-align: center;
+    color: #1a2e1f;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.modal-box label {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.modal-box input {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.modal-box input:focus {
+    border-color: #1b8f3a;
+    background: white;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(27,143,58,0.1);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    margin-top: 0;
+    padding: 11px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 9px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    box-shadow: none;
+}
+
+.btn-signup-submit {
+    background: linear-gradient(135deg, #1b8f3a, #26a84a);
+    color: white;
+    box-shadow: 0 3px 10px rgba(27,143,58,0.35);
+}
+
+.btn-signup-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(27,143,58,0.45);
+}
+
+.btn-cancel {
+    background: #f1f5f9;
+    color: #555;
+}
+
+.btn-cancel:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.required-star { color: #e53935; margin-left: 2px; }
+</style>
 </head>
 
 <body>
@@ -12,33 +217,86 @@
 
 <div class="login-container">
 
-<h1 class="title">KIIT STUDENT BUS FACILITY</h1>
-<p class="subtitle">Transport Management System</p>
+    <h1 class="title">KIIT STUDENT BUS FACILITY</h1>
+    <p class="subtitle">Transport Management System</p>
 
-<div class="login-box">
+    <div class="login-box">
 
-<h2>WELCOME!</h2>
+        <h2>WELCOME!</h2>
 
-<label>Role</label>
-<select id="role">
-<option value="student">Student</option>
-<option value="admin">Admin</option>
-</select>
+        <!-- Role Tabs -->
+        <div class="role-tabs">
+            <button class="role-tab active" onclick="switchRole('student')">🎓 Student</button>
+            <button class="role-tab" onclick="switchRole('admin')">🔐 Admin</button>
+        </div>
 
-<label>Username</label>
-<input type="text" id="username" placeholder="Enter username">
+        <!-- ===== STUDENT PANEL ===== -->
+        <div id="studentPanel" class="student-panel">
+            <p>New here? Register to track your bus,<br>view schedules and get notifications.</p>
+            <button class="big-signup-btn" onclick="openSignupModal()">Sign Up</button>
 
-<label>Password</label>
-<input type="password" id="password" placeholder="Enter password">
+            <div class="already-account">
+                Already have an account?
+                <a onclick="toggleStudentLogin()">Login here</a>
+            </div>
 
-<div class="auth-buttons">
+            <!-- Student login fields — hidden until "Login here" clicked -->
+            <div class="student-login-form" id="studentLoginForm">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <button onclick="login()" style="margin-top:16px; width:100%; padding:11px; background:linear-gradient(135deg,#1b8f3a,#26a84a); color:white; border:none; border-radius:9px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 3px 10px rgba(27,143,58,0.35);">
+                    Login
+                </button>
+            </div>
+        </div>
 
-<button onclick="login()">Login</button>
-<button onclick="signup()">Sign Up</button>
+        <!-- ===== ADMIN PANEL ===== -->
+        <div id="adminPanel" style="display:none;">
+            <label>Username</label>
+            <input type="text" id="adminUsername" placeholder="Enter admin username">
+            <label>Password</label>
+            <input type="password" id="adminPassword" placeholder="Enter admin password">
+            <div class="auth-buttons">
+                <button onclick="login()">Login</button>
+            </div>
+        </div>
 
+    </div>
 </div>
 
-</div>
+<!-- ===== SIGNUP MODAL ===== -->
+<div class="modal-overlay" id="signupModal">
+    <div class="modal-box">
+        <h2>🎓 Student Registration</h2>
+
+        <label>Full Name <span class="required-star">*</span></label>
+        <input type="text" id="sig_name" placeholder="e.g., Rahul Kumar">
+
+        <label>Roll Number <span class="required-star">*</span></label>
+        <input type="text" id="sig_roll" placeholder="e.g., 22053001">
+
+        <label>Email <span class="required-star">*</span></label>
+        <input type="email" id="sig_email" placeholder="e.g., rahul@kiit.ac.in">
+
+        <label>Phone</label>
+        <input type="tel" id="sig_phone" placeholder="e.g., 9876543210">
+
+        <label>Branch</label>
+        <input type="text" id="sig_branch" placeholder="e.g., CSE, ECE, MECH">
+
+        <label>Username <span class="required-star">*</span></label>
+        <input type="text" id="sig_username" placeholder="Choose a username">
+
+        <label>Password <span class="required-star">*</span></label>
+        <input type="password" id="sig_password" placeholder="Choose a password">
+
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="closeSignupModal()">Cancel</button>
+            <button class="btn-signup-submit" onclick="signup()">Register</button>
+        </div>
+    </div>
 </div>
 
 <script src="login.js"></script>

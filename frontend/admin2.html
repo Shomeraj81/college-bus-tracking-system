@@ -4,8 +4,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - KIIT Bus Facility</title>
-    <!-- <link rel="stylesheet" href="style.css> -->
     <link rel="stylesheet" href="admin.css">
+    <style>
+        /* ===== NOTIFICATION COMPOSER ===== */
+        .notif-type-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .type-chip {
+            padding: 7px 18px;
+            border-radius: 20px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #555;
+        }
+
+        .type-chip:hover { transform: translateY(-1px); }
+
+        .type-chip.selected-info    { background: #e3f2fd; border-color: #2196F3; color: #1565c0; }
+        .type-chip.selected-warning { background: #fff8e1; border-color: #FFC107; color: #e65100; }
+        .type-chip.selected-alert   { background: #fce4ec; border-color: #e91e63; color: #c2185b; }
+
+        .notif-textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 90px;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        .notif-textarea:focus {
+            border-color: #1b8f3a;
+            background: #fff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(27,143,58,0.1);
+        }
+
+        /* ===== SENT NOTIFICATIONS LIST ===== */
+        .notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 14px 16px;
+            border-left: 4px solid #2196F3;
+            position: relative;
+        }
+
+        .notif-item.warning { border-left-color: #FFC107; }
+        .notif-item.alert   { border-left-color: #e91e63; }
+
+        .notif-item-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .notif-item-body { flex: 1; }
+
+        .notif-item-title {
+            font-weight: 700;
+            color: #1a2e1f;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .notif-item-msg {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .notif-item-time {
+            font-size: 11px;
+            color: #aab0bc;
+        }
+
+        .notif-delete-btn {
+            background: #fdecea;
+            color: #c62828;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            width: auto;
+            margin: 0;
+        }
+
+        .notif-delete-btn:hover {
+            background: #f44336;
+            color: white;
+        }
+
+        .notif-empty {
+            text-align: center;
+            color: #aab0bc;
+            padding: 30px;
+            font-size: 14px;
+        }
+
+        /* Student table extra col */
+        .student-badge {
+            font-size: 12px;
+            background: #e8f5e9;
+            color: #1b8f3a;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body class="dashboard-body">
 
@@ -27,11 +159,11 @@
                 <a href="#routes" class="nav-item" onclick="showSection('routes')">
                     <span>🗺️</span> Manage Routes
                 </a>
-                <!-- <a href="#drivers" class="nav-item" onclick="showSection('drivers')">
-                    <span>🧑‍✈️</span> Manage Drivers
-                </a> -->
                 <a href="#students" class="nav-item" onclick="showSection('students')">
                     <span>👥</span> Students
+                </a>
+                <a href="#notifications" class="nav-item" onclick="showSection('notifications')">
+                    <span>📢</span> Notifications
                 </a>
             </nav>
         </aside>
@@ -39,7 +171,7 @@
         <!-- Main Content -->
         <main class="dashboard-main">
 
-            <!-- ===== MANAGE BUSES SECTION ===== -->
+            <!-- ===== MANAGE BUSES ===== -->
             <section id="buses" class="dashboard-section active">
                 <h2>🚌 Manage Buses</h2>
 
@@ -55,23 +187,19 @@
                             <input type="number" id="busCapacity" placeholder="e.g., 50">
                         </div>
                         <div class="form-group">
-                            <label>Departure Time:</label>
+                            <label>Departure Time</label>
                             <input type="text" id="departureTime" placeholder="e.g., 8:00 AM">
                         </div>
                         <div class="form-group">
-                            <label>Arrival Time:</label>
-                            <input type="text" id="arrivalTime" placeholder="e.g., 8:00 AM">
+                            <label>Arrival Time</label>
+                            <input type="text" id="arrivalTime" placeholder="e.g., 9:00 AM">
                         </div>
                         <div class="form-group">
                             <label>Route</label>
                             <select id="busRoute">
                                 <option value="">Select Route</option>
-                                <option value="Route A">Route A</option>
-                                <option value="Route B">Route B</option>
-                                <option value="Route C">Route C</option>
                             </select>
                         </div>
-                        
                     </div>
                     <button onclick="addBus()" class="add-btn">+ Add Bus</button>
                 </div>
@@ -85,48 +213,24 @@
                                 <th>Capacity</th>
                                 <th>Route</th>
                                 <th>Departure</th>
-                               <th>Arrival</th>
+                                <th>Arrival</th>
                                 <th>Status</th>
                                 <th>Actions</th>
-                                
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>KL-01-1234</td>
-                                <td>50</td>
-                                <td>Route A</td>
-                                
-                                <td><span class="status active">Active</span></td>
-                                <td>
-                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
-                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>KL-02-5678</td>
-                                <td>45</td>
-                                <td>Route B</td>
-                                
-                                <td><span class="status active">Active</span></td>
-                                <td>
-                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
-                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- ===== MANAGE ROUTES SECTION ===== -->
+            <!-- ===== MANAGE ROUTES ===== -->
             <section id="routes" class="dashboard-section">
                 <h2>🗺️ Manage Routes</h2>
 
                 <div class="add-form">
                     <h3>Add New Route</h3>
                     <div class="form-grid">
-                         <div class="form-group">
+                        <div class="form-group">
                             <label>Route Name</label>
                             <input type="text" id="routeName" placeholder="e.g., Route D">
                         </div>
@@ -138,7 +242,6 @@
                             <label>Ending Point</label>
                             <input type="text" id="routeEnd" placeholder="e.g., City Center">
                         </div>
-                        
                     </div>
                     <button onclick="addRoute()" class="add-btn">+ Add Route</button>
                 </div>
@@ -148,140 +251,101 @@
                     <table id="routeTable">
                         <thead>
                             <tr>
-                                
+                                <th>Route Name</th>
                                 <th>Start</th>
                                 <th>End</th>
-                               
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                
-                                <td>Campus 1</td>
-                                <td>City Center</td>
-                                
-                                <td>
-                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
-                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                
-                                <td>Campus 2</td>
-                                <td>Railway Station</td>
-                                
-                                <td>
-                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
-                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- ===== MANAGE DRIVERS SECTION =====
-            <section id="drivers" class="dashboard-section">
-                <h2>🧑‍✈️ Manage Drivers</h2>
+            <!-- ===== STUDENTS ===== -->
+            <section id="students" class="dashboard-section">
+                <h2>👥 Students</h2>
 
-                <div class="add-form">
-                    <h3>Add New Driver</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Driver Name</label>
-                            <input type="text" id="driverName" placeholder="Enter full name">
-                        </div>
-                        <div class="form-group">
-                            <label>License Number</label>
-                            <input type="text" id="driverLicense" placeholder="e.g., DL-1234567890">
-                        </div>
-                        <div class="form-group">
-                            <label>Phone Number</label>
-                            <input type="tel" id="driverPhone" placeholder="e.g., +91 9876543210">
-                        </div>
-                        <div class="form-group">
-                            <label>Experience (years)</label>
-                            <input type="number" id="driverExperience" placeholder="e.g., 5">
-                        </div>
-                    </div>
-                    <button onclick="addDriver()" class="add-btn">+ Add Driver</button>
-                </div> -->
-<!-- 
                 <div class="data-table">
-                    <h3>Drivers List</h3>
-                    <table id="driverTable">
+                    <h3>Registered Students</h3>
+                    <table id="studentTable">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Name</th>
-                                <th>License</th>
+                                <th>Roll No.</th>
+                                <th>Branch</th>
+                                <th>Email</th>
                                 <th>Phone</th>
-                                <th>Experience</th>
-                                <th>Actions</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>DL-1234567890</td>
-                                <td>+91 9876543210</td>
-                                <td>10 years</td>
-                                <td>
-                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
-                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jane Smith</td>
-                                <td>DL-9876543210</td>
-                                <td>+91 8765432109</td>
-                                <td>7 years</td>
-                                <td>
-                                    <button class="edit-btn" onclick="editRow(this)">Edit</button>
-                                    <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
-            </section> -->
+            </section>
 
-            <!-- ================= STUDENTS ================= -->
+            <!-- ===== NOTIFICATIONS ===== -->
+            <section id="notifications" class="dashboard-section">
+                <h2>📢 Send Notifications</h2>
 
-<section id="students" class="dashboard-section" style="display:none">
+                <div class="add-form">
+                    <h3>Compose Notification</h3>
 
-<h2>👥 Students</h2>
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <label>Title</label>
+                        <input type="text" id="notifTitle" placeholder="e.g., Bus Delay on Route A">
+                    </div>
 
-<div class="data-table">
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <label>Type</label>
+                        <div class="notif-type-row" id="typeChips">
+                            <span class="type-chip selected-info" onclick="selectType('info',this)">📘 Info</span>
+                            <span class="type-chip" onclick="selectType('warning',this)">⚠️ Warning</span>
+                            <span class="type-chip" onclick="selectType('alert',this)">🚨 Alert</span>
+                        </div>
+                    </div>
 
-<h3>Registered Students</h3>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea class="notif-textarea" id="notifMessage" placeholder="Type your message to all students..."></textarea>
+                    </div>
 
-<table id="studentTable">
+                    <button onclick="sendNotification()" class="add-btn" style="margin-top:16px;">
+                        📤 Send to All Students
+                    </button>
+                </div>
 
-<thead>
-<tr>
-<th>Student ID</th>
-<th>Name</th>
-<th>Route</th>
-<th>Bus Number</th>
-<th>Status</th>
-</tr>
-</thead>
-
-<tbody>
-
-<!-- Filled dynamically from backend -->
-
-</tbody>
-
-</table>
-
-</div>
-
-</section>
+                <div class="data-table">
+                    <h3>Sent Notifications</h3>
+                    <div class="notif-list" id="notifList">
+                        <p class="notif-empty">No notifications sent yet</p>
+                    </div>
+                </div>
+            </section>
 
         </main>
     </div>
+
+    <!-- Mobile Bottom Navigation for Admin (hidden on desktop) -->
+    <nav class="admin-bottom-nav" style="display:none;" id="adminBottomNav">
+        <a href="#buses" class="active" onclick="showSection('buses')">
+            <span class="bnav-icon">🚌</span>
+            Buses
+        </a>
+        <a href="#routes" onclick="showSection('routes')">
+            <span class="bnav-icon">🗺️</span>
+            Routes
+        </a>
+        <a href="#students" onclick="showSection('students')">
+            <span class="bnav-icon">👥</span>
+            Students
+        </a>
+        <a href="#notifications" onclick="showSection('notifications')">
+            <span class="bnav-icon">📢</span>
+            Notify
+        </a>
+    </nav>
 
     <script src="admin2.js"></script>
 

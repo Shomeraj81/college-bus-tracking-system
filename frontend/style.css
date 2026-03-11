@@ -1,87 +1,96 @@
+/* ================================================
+   STYLE.CSS — LOGIN PAGE (FULLY RESPONSIVE)
+   ================================================ */
 
-body {
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
     position: relative;
+    padding: 20px;
 }
 
-
+/* Background image */
 body::before {
     content: "";
-    position: absolute;
+    position: fixed;
     inset: 0;
-
     background: url("bus-background.jpg") center center / cover no-repeat;
-
-    /* Zoom animation */
     animation: zoomBackground 2.5s ease forwards;
-
     z-index: -2;
 }
 
-
+/* Overlay */
 body::after {
     content: "";
-    position: absolute;
+    position: fixed;
     inset: 0;
     background: rgba(255, 255, 255, 0.65);
     z-index: -1;
 }
 
-
-.login-container {
-    text-align: center;
+/* ===== LOGO ===== */
+.kiit-logo {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    width: 60px;
+    z-index: 10;
 }
 
+/* ===== LOGIN CONTAINER ===== */
+.login-container {
+    text-align: center;
+    width: 100%;
+    max-width: 420px;
+}
 
 .title {
     color: #1b8f3a;
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 700;
     margin-bottom: 6px;
+    line-height: 1.2;
 }
 
 .subtitle {
     color: #6b7a8d;
-    font-size: 14px;
-    margin-bottom: 28px;
+    font-size: 13px;
+    margin-bottom: 22px;
 }
 
-
+/* ===== LOGIN BOX ===== */
 .login-box {
     background: white;
-    padding: 28px;
-    width: 360px;
-    border-radius: 14px;
-
+    padding: 28px 24px;
+    width: 100%;
+    border-radius: 16px;
     box-shadow:
         0 1px 4px rgba(0,0,0,0.06),
-        0 6px 18px rgba(0,0,0,0.08);
-
+        0 6px 24px rgba(0,0,0,0.1);
     text-align: left;
-
-   
     opacity: 0;
     animation: fadeInCard 0.6s ease forwards;
-    animation-delay: 1.8s;
+    animation-delay: 1s;
 }
-
 
 .login-box h2 {
     text-align: center;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
     color: #1a2e1f;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
 }
 
-
+/* ===== LABELS ===== */
 label {
     display: block;
     margin-top: 14px;
@@ -90,16 +99,18 @@ label {
     color: #4a5568;
 }
 
-
+/* ===== INPUTS ===== */
 input, select {
     width: 100%;
-    padding: 10px 12px;
+    padding: 11px 13px;
     margin-top: 6px;
     border-radius: 8px;
     border: 1.5px solid #e2e8f0;
     background: #f8fafc;
     font-size: 14px;
     transition: all 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 input:focus, select:focus {
@@ -109,11 +120,11 @@ input:focus, select:focus {
     box-shadow: 0 0 0 3px rgba(27, 143, 58, 0.1);
 }
 
-
+/* ===== BUTTONS ===== */
 button {
     width: 100%;
-    margin-top: 22px;
-    padding: 11px;
+    margin-top: 16px;
+    padding: 12px;
     background: linear-gradient(135deg, #1b8f3a, #26a84a);
     color: white;
     border: none;
@@ -122,8 +133,8 @@ button {
     font-weight: 700;
     cursor: pointer;
     transition: all 0.25s ease;
-
     box-shadow: 0 3px 10px rgba(27, 143, 58, 0.35);
+    -webkit-tap-highlight-color: transparent;
 }
 
 button:hover {
@@ -131,78 +142,288 @@ button:hover {
     box-shadow: 0 6px 16px rgba(27, 143, 58, 0.45);
 }
 
-
-.kiit-logo {
-    position: absolute;
-    top: 18px;
-    right: 25px;
-    width: 80px;
+button:active {
+    transform: translateY(0);
 }
 
-
-.bus-animation {
-    position: absolute;
-    top: 25px;
-    right: -150px;
-    width: 120px;
-    animation: moveBus 12s linear infinite;
+/* ===== ROLE TABS ===== */
+.role-tabs {
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid #e2e8f0;
+    margin-bottom: 20px;
 }
 
+.role-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #f8fafc;
+    color: #6b7a8d;
+    transition: all 0.2s ease;
+    border: none;
+    outline: none;
+    width: auto;
+    margin: 0;
+    box-shadow: none;
+}
 
+.role-tab.active {
+    background: linear-gradient(135deg, #1b8f3a, #26a84a);
+    color: white;
+    box-shadow: none;
+}
 
+.role-tab:hover:not(.active) {
+    background: #eef2f7;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ===== STUDENT PANEL ===== */
+.student-panel {
+    text-align: center;
+    padding: 8px 0 4px;
+}
+
+.student-panel p {
+    color: #6b7a8d;
+    font-size: 14px;
+    margin-bottom: 18px;
+    line-height: 1.6;
+}
+
+.student-panel .big-signup-btn {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #1b8f3a, #26a84a);
+    color: white;
+    border: none;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 10px rgba(27,143,58,0.35);
+    margin-top: 0;
+}
+
+.student-panel .big-signup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(27,143,58,0.45);
+}
+
+.already-account {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #6b7a8d;
+}
+
+.already-account a {
+    color: #1b8f3a;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.already-account a:hover {
+    text-decoration: underline;
+}
+
+/* ===== STUDENT LOGIN MINI FORM ===== */
+.student-login-form {
+    display: none;
+    margin-top: 16px;
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 16px;
+    text-align: left;
+}
+
+.student-login-form.open {
+    display: block;
+}
+
+/* ===== AUTH BUTTONS ===== */
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.auth-buttons button {
+    flex: 1;
+    margin-top: 0;
+    padding: 12px;
+}
+
+/* ===== SIGNUP MODAL ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal-box {
+    background: white;
+    padding: 28px 24px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 430px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: fadeInCard 0.3s ease forwards;
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.modal-box h2 {
+    text-align: center;
+    color: #1a2e1f;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.modal-box label {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.modal-box input {
+    width: 100%;
+    padding: 11px 13px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    -webkit-appearance: none;
+}
+
+.modal-box input:focus {
+    border-color: #1b8f3a;
+    background: white;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(27,143,58,0.1);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    margin-top: 0;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 9px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    box-shadow: none;
+}
+
+.btn-signup-submit {
+    background: linear-gradient(135deg, #1b8f3a, #26a84a);
+    color: white;
+    box-shadow: 0 3px 10px rgba(27,143,58,0.35) !important;
+}
+
+.btn-cancel {
+    background: #f1f5f9;
+    color: #555;
+}
+
+.required-star {
+    color: #e53935;
+    margin-left: 2px;
+}
+
+/* ===== ANIMATIONS ===== */
 @keyframes zoomBackground {
-    0% {
-        transform: scale(1.15);
-    }
-    100% {
-        transform: scale(1);
-    }
+    0%   { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
 
 @keyframes fadeInCard {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(15px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes moveBus {
-    0%   { right: -150px; }
-    100% { right: 110%; }
-}
+/* ===== RESPONSIVE ===== */
 
+/* Tablet */
+@media (max-width: 600px) {
+    body {
+        align-items: flex-start;
+        padding: 16px 16px 40px;
+    }
 
-@media (max-width: 480px) {
-    .login-box {
-        width: 90%;
+    .login-container {
+        margin-top: 60px;
+    }
+
+    .kiit-logo {
+        width: 48px;
+        top: 12px;
+        right: 14px;
     }
 
     .title {
-        font-size: 22px;
+        font-size: 20px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+
+    .login-box {
+        padding: 22px 18px;
+    }
+
+    .login-box h2 {
+        font-size: 18px;
     }
 }
 
-.auth-buttons{
-display:flex;
-gap:12px;
-margin-top:20px;
-}
+/* Small phones */
+@media (max-width: 380px) {
+    .title {
+        font-size: 17px;
+    }
 
-.auth-buttons button{
-flex:1;
-padding:12px;
-background:#1b8f3a;
-border:none;
-border-radius:8px;
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
+    .role-tab {
+        font-size: 12px;
+        padding: 9px 6px;
+    }
 
-.auth-buttons button:hover{
-background:#157a31;
+    .login-box {
+        padding: 18px 14px;
+    }
+
+    .modal-box {
+        padding: 22px 16px;
+    }
 }

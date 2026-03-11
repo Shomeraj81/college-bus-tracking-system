@@ -73,7 +73,7 @@ async function loadRoutes(){
             <td>${route.routeName}</td>
             <td>${route.startPoint}</td>
             <td>${route.endPoint}</td>
-            <td>-</td>
+            
             <td>
                 <button onclick="deleteRoute('${route._id}')" class="delete-btn">Delete</button>
             </td>

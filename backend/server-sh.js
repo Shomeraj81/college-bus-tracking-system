@@ -79,11 +79,47 @@ role:"admin"
 
 
 /* ================= SIGNUP ================= */
+app.post("/signup", (req, res) => {
 
-app.post("/signup",(req,res)=>{
+    const {
+        fullName,
+        rollNumber,
+        email,
+        phone,
+        branch,
+        password
+    } = req.body;
+
+    console.log(req.body);
+
+    if(users.find(u => u.email === email)){
+        return res.json({
+            success: false,
+            message: "User already exists"
+        });
+    }
+
+    users.push({
+        fullName,
+        rollNumber,
+        email,
+        phone,
+        branch,
+        password,
+        role: "student"
+    });
+
+    console.log("New student registered:", email);
+
+    res.json({
+        success: true,
+        message: "Registration successful"
+    });
+});
+/*app.post("/signup",(req,res)=>{
 
 const {username,password,role} = req.body
-
+console.log(req.body);
 if(users.find(u=>u.username===username)){
 return res.json({success:false})
 }
@@ -98,7 +134,7 @@ console.log("New student registered:",username)
 
 res.json({success:true})
 
-})
+})*/
 
 
 
@@ -107,7 +143,7 @@ res.json({success:true})
 app.post("/login",(req,res)=>{
 
 const {username,password} = req.body
-
+console.log(req.body);
 let user = users.find(
 u=>u.username===username && u.password===password
 )

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./RegistrationForm.css";
+import {registerUser} from "../../../services/authService";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -14,7 +15,6 @@ function RegistrationForm({ open, handleClose }) {
     email: "",
     phone: "",
     branch: "",
-    username: "",
     password: "",
   });
 
@@ -25,12 +25,26 @@ function RegistrationForm({ open, handleClose }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
-    console.log(formData);
-
-    // Backend API call will go here later
+   
+    try {
+      const response = await registerUser(formData);
+        console.log(response);
+    if(response.success) {
+      // Handle successful registration
+      console.log("Registration successful!");
+     
+    } else {
+      // Handle registration error
+      console.log("Registration failed:", response.message);
+      
+    }
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
+    
   };
 
   return (
@@ -110,15 +124,6 @@ function RegistrationForm({ open, handleClose }) {
           label="Branch"
           name="branch"
           value={formData.branch}
-          onChange={handleChange}
-          margin="normal"
-        />
-
-        <TextField
-          fullWidth
-          label="Username"
-          name="username"
-          value={formData.username}
           onChange={handleChange}
           margin="normal"
         />

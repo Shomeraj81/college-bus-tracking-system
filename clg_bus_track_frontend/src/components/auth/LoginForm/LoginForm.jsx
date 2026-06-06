@@ -1,24 +1,33 @@
 import React, { useState } from "react";
-
+import { loginUser } from "../../../services/authService";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
 function LoginForm(role) {
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    
+    const [credentials, setCredentials] = useState({
+        username: "",
+        password: ""
+    });
+    const handleLogin = async(e) => {
+        e.preventDefault();   
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-
-        console.log({
-            username,
-            password
-        });
-
-        // API call will go here later
+        try {
+            const response = await loginUser(credentials);
+            console.log(response);
+        } catch (error) {
+            console.error("Login failed:", error);
+        }
     };
+
+const handleChange = (e) => {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
+    });
+  };
 
     return (
         <Box
@@ -36,9 +45,10 @@ function LoginForm(role) {
                 label="Username"
                 variant="outlined"
                 fullWidth
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter admin username"
+                value={credentials.username}
+                onChange={handleChange}
+                name="username"
+                placeholder="Enter username"
             />
 
             <TextField
@@ -46,9 +56,10 @@ function LoginForm(role) {
                 type="password"
                 variant="outlined"
                 fullWidth
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter admin password"
+                value={credentials.password}
+                onChange={handleChange}
+                name="password"
+                placeholder="Enter password"
             />
 
             <Button

@@ -1,0 +1,52 @@
+body{
+    margin: 0;
+    padding: 0;
+    
+}
+
+.background{    
+    background-image: url('../assets/bus-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+ 
+   min-height: 100vh;
+    width: 100%;
+    
+    
+}
+
+@media (max-width: 1024px) {
+    .background{
+        background-image: url('../assets/bus-background-mobile.jpg');
+        background-size: cover;
+   min-height: 100vh;
+    width: 100%;
+    
+    }
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-self:center;
+    
+    text-align: center;
+    
+
+    justify-content: center;
+    color: #137d08;
+}
+
+@media (max-width: 1024px){
+    .content h1 {
+        font-size: 25px !important;
+        margin-bottom: 15px;
+    }
+}

@@ -1,0 +1,87 @@
+.signup-login-card {
+    display: flex;
+  flex-direction: column;
+  width: 35%; 
+  border-radius: 20px !important;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15) !important;
+  
+    background-color: rgba(255, 255, 255, 0.8); 
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+   
+    
+}
+
+.role-toggle {
+  display: flex;
+  margin-top: 2.5%;
+  margin-bottom: 2.5%;
+  width: 70% !important;
+  justify-self: center;
+   
+}
+
+.student-btn {
+  flex: 1;  
+  border-radius: 12px 0 0 12px !important;
+}
+
+.admin-btn {
+  flex: 1;
+  border-radius: 0 12px 12px 0 !important;
+}
+
+.description {
+  color: #7d8aa5;
+  margin-bottom: 4% !important;
+  margin-top: 4% !important;
+  width: 70%;
+  justify-self: center;
+}
+
+.signup-btn {
+  background-color: #22a63d !important;
+  border-radius: 12px !important;
+  padding: 1% !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  margin-bottom: 25px !important;
+  width: 70% !important;
+   left: 50%;    
+    transform: translate(-50%);
+}
+
+.login-text {
+  color: #7d8aa5;
+  width: 70%;
+  justify-self: center;
+}
+
+.login-link {
+  color: #22a63d;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+ /*.signup-login-card {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .signup-btn {
+    font-size: 16px;
+    padding: 10px;
+  }*/
+  .signup-login-card {
+    width: 90%;
+    top: 70%;   
+  }
+  .signup-btn {
+    font-size: 15px !important;
+    padding: 2px !important;
+  }
+}

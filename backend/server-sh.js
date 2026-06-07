@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -9,13 +11,18 @@ const busRoutes = require("./routes/busRoutes");
 const buses = require("./routes/buses");
 const locationRoutes = require("./routes/location");
 
+const jwt = require("jsonwebtoken");
+const auth = require("./middlewares/auth");
+const User = require("./models/users");
+const bcrypt = require("bcryptjs");
+
 const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors: {
-    origin: "*"
-  }
+    cors: {
+        origin: "*"
+    }
 });
 
 /* ==========================
@@ -30,19 +37,19 @@ app.use(express.json());
 ========================== */
 
 mongoose.connect("mongodb://127.0.0.1:27017/kiit_bus")
-.then(()=>{
-    console.log("✅ MongoDB Connected");
-})
-.catch(err=>{
-    console.log("❌ MongoDB Error:", err);
-});
+    .then(() => {
+        console.log("✅ MongoDB Connected");
+    })
+    .catch(err => {
+        console.log("❌ MongoDB Error:", err);
+    });
 
 /* ==========================
    ROOT API
 ========================== */
 
 app.get("/", (req, res) => {
-  res.send("🚍 KIIT Bus Tracker API Running");
+    res.send("🚍 KIIT Bus Tracker API Running");
 });
 
 /* ==========================
@@ -57,11 +64,11 @@ app.use("/api", locationRoutes(io)); // realtime location
    SOCKET CONNECTION
 ========================== */
 
-io.on("connection",(socket)=>{
+io.on("connection", (socket) => {
 
     console.log("User Connected");
 
-    socket.on("joinBus",(busNumber)=>{
+    socket.on("joinBus", (busNumber) => {
         socket.join(busNumber);
         console.log("Student joined bus room:", busNumber);
     });
@@ -69,52 +76,82 @@ io.on("connection",(socket)=>{
 });
 
 let users = [
-{
-username:"admin",
-password:"admin123",
-role:"admin"
-}
+    {
+        username: "admin",
+        password: "admin123",
+        role: "admin"
+    }
 ]
 
+function generateToken(user) {
+    return jwt.sign(
+        {
+            userId: user._id,
+            role: user.role,
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "7d",
+        }
+    );
+}
 
 
 /* ================= SIGNUP ================= */
-app.post("/signup", (req, res) => {
+app.post("/signup", async(req, res) => {
+    try {
+        const {
+            fullName,
+            rollNumber,
+            email,
+            phone,
+            password,
+        } = req.body;
 
-    const {
-        fullName,
-        rollNumber,
-        email,
-        phone,
-        branch,
-        password
-    } = req.body;
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
 
-    console.log(req.body);
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: "User already exists",
+            });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-    if(users.find(u => u.email === email)){
-        return res.json({
+        // Create user
+        const user = new User({
+            fullName,
+            rollNumber,
+            email,
+            phone,
+            password: hashedPassword,
+            role: "student",
+        });
+        await user.save();
+        const token = generateToken(user);
+
+        return res.status(201).json({
+            success: true,
+            message: "Registration successful",
+            token,
+            user: {
+                id: user._id,
+                fullName: user.fullName,
+                email: user.email,
+                role: user.role,
+            },
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
             success: false,
-            message: "User already exists"
+            message: "Internal Server Error",
         });
     }
-
-    users.push({
-        fullName,
-        rollNumber,
-        email,
-        phone,
-        branch,
-        password,
-        role: "student"
-    });
-
-    console.log("New student registered:", email);
-
-    res.json({
-        success: true,
-        message: "Registration successful"
-    });
+    
 });
 /*app.post("/signup",(req,res)=>{
 
@@ -140,34 +177,65 @@ res.json({success:true})
 
 /* ================= LOGIN ================= */
 
-app.post("/login",(req,res)=>{
+app.post("/login", async (req, res) => {
+    try {
+        console.log(req.body);
+        const { username, password } = req.body;
+        const email = username; // Assuming username is the email
+        const user = await User.findOne({ email });
+        console.log(user);
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid credentials",
+            });
+        }
 
-const {username,password} = req.body
-console.log(req.body);
-let user = users.find(
-u=>u.username===username && u.password===password
-)
+        const isMatch = await bcrypt.compare(
+            password,
+            user.password
+        );
 
-if(!user){
-return res.json({success:false})
-}
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid credentials",
+            });
+        }
 
-res.json({
-success:true,
-role:user.role
-})
+        const token = generateToken(user);
 
-})
+        return res.status(200).json({
+            success: true,
+            message: "Login successful",
+            token,
+            user: {
+                id: user._id,
+                fullName: user.fullName,
+                email: user.email,                
+                role: user.role,
+            },
+        });
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+});
 
 
 
 /* ================= GET STUDENTS ================= */
 
-app.get("/students",(req,res)=>{
+app.get("/students", (req, res) => {
 
-let students = users.filter(u=>u.role==="student")
+    let students = users.filter(u => u.role === "student")
 
-res.json(students)
+    res.json(students)
 
 })
 
@@ -177,6 +245,7 @@ res.json(students)
 
 const PORT = 5000;
 
-server.listen(PORT, ()=>{
+server.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
+    console.log(process.env.JWT_SECRET);
 });

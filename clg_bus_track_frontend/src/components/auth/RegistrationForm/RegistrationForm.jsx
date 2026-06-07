@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./RegistrationForm.css";
-import {registerUser} from "../../../services/authService";
+import { registerUser } from "../../../services/authService";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -9,12 +10,13 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 
 function RegistrationForm({ open, handleClose }) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     rollNumber: "",
     email: "",
     phone: "",
-    branch: "",
+    role: "student",
     password: "",
   });
 
@@ -25,26 +27,40 @@ function RegistrationForm({ open, handleClose }) {
     });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-   
+
     try {
       const response = await registerUser(formData);
-        console.log(response);
-    if(response.success) {
-      // Handle successful registration
-      console.log("Registration successful!");
-     
-    } else {
-      // Handle registration error
-      console.log("Registration failed:", response.message);
-      
-    }
+      console.log(response);
+      if (response.success) {
+        // Handle successful registration
+        handleClose();
+        console.log("Registration successful!");
+        localStorage.setItem(
+          "token",
+          response.token
+        );
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify(response.user)
+        );
+
+        if (response.user.role === "student") {
+          navigate("/student-dashboard");
+        } 
+
+      } else {
+        // Handle registration error
+        console.log("Registration failed:", response.message);
+
+      }
     } catch (error) {
       console.error("Registration failed:", error);
     }
-    
+
   };
 
   return (
@@ -119,14 +135,7 @@ function RegistrationForm({ open, handleClose }) {
           margin="normal"
         />
 
-        <TextField
-          fullWidth
-          label="Branch"
-          name="branch"
-          value={formData.branch}
-          onChange={handleChange}
-          margin="normal"
-        />
+
 
         <TextField
           fullWidth
@@ -139,38 +148,38 @@ function RegistrationForm({ open, handleClose }) {
         />
 
         <Stack
-  direction="row"
-  spacing={2}
-  sx={{ mt: 3 }}
->
-  <Button
-  variant="contained"
-  fullWidth
-  onClick={handleClose}
-  sx={{
-    backgroundColor: "white",
-    color: "#22a63d",
+          direction="row"
+          spacing={2}
+          sx={{ mt: 3 }}
+        >
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={handleClose}
+            sx={{
+              backgroundColor: "white",
+              color: "#22a63d",
 
-    "&:hover": {
-      backgroundColor: "#f5f5f5",
-    },
-  }}
->
-  Cancel
-</Button>
+              "&:hover": {
+                backgroundColor: "#f5f5f5",
+              },
+            }}
+          >
+            Cancel
+          </Button>
 
-  <Button
-    type="submit"
-    variant="contained"
-    fullWidth
-    sx={{
-      backgroundColor: "#22a63d",
-      fontWeight: "bold",
-    }}
-  >
-    Register
-  </Button>
-</Stack>
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{
+              backgroundColor: "#22a63d",
+              fontWeight: "bold",
+            }}
+          >
+            Register
+          </Button>
+        </Stack>
       </Box>
     </Modal>
   );

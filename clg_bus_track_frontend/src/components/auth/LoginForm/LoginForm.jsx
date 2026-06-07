@@ -1,33 +1,55 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../../services/authService";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
 function LoginForm(role) {
+    const navigate = useNavigate();
 
-    
     const [credentials, setCredentials] = useState({
         username: "",
         password: ""
     });
-    const handleLogin = async(e) => {
-        e.preventDefault();   
+    const handleLogin = async (e) => {
+        e.preventDefault();
 
         try {
             const response = await loginUser(credentials);
+            console.log(response);
+            if (response.success) {
+                console.log("Login successful!");
+                localStorage.setItem(
+                    "token",
+                    response.token
+                );
+
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(response.user)
+                );
+
+                if (response.user.role === "student") {
+                   navigate("/student-dashboard");
+                } else {
+                    navigate("/admin-dashboard");
+                }
+            } else {
+                console.log("Login failed:", response.message);
+            }
             console.log(response);
         } catch (error) {
             console.error("Login failed:", error);
         }
     };
 
-const handleChange = (e) => {
-    setCredentials({
-      ...credentials,
-      [e.target.name]: e.target.value,
-    });
-  };
+    const handleChange = (e) => {
+        setCredentials({
+            ...credentials,
+            [e.target.name]: e.target.value,
+        });
+    };
 
     return (
         <Box
@@ -68,7 +90,7 @@ const handleChange = (e) => {
                 fullWidth
                 sx={{
                     backgroundColor: "#22a63d",
-                    
+
                     fontWeight: "bold"
                 }}
             >

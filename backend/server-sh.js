@@ -15,6 +15,7 @@ const jwt = require("jsonwebtoken");
 const auth = require("./middlewares/auth");
 const User = require("./models/users");
 const bcrypt = require("bcryptjs");
+const {validate} = require("./middlewares/signupSchema.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -75,13 +76,6 @@ io.on("connection", (socket) => {
 
 });
 
-let users = [
-    {
-        username: "admin",
-        password: "admin123",
-        role: "admin"
-    }
-]
 
 function generateToken(user) {
     return jwt.sign(
@@ -98,7 +92,7 @@ function generateToken(user) {
 
 
 /* ================= SIGNUP ================= */
-app.post("/signup", async(req, res) => {
+app.post("/signup", validate, async(req, res) => {
     try {
         const {
             fullName,
@@ -153,25 +147,6 @@ app.post("/signup", async(req, res) => {
     }
     
 });
-/*app.post("/signup",(req,res)=>{
-
-const {username,password,role} = req.body
-console.log(req.body);
-if(users.find(u=>u.username===username)){
-return res.json({success:false})
-}
-
-users.push({
-username,
-password,
-role
-})
-
-console.log("New student registered:",username)
-
-res.json({success:true})
-
-})*/
 
 
 
